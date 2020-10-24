@@ -1,0 +1,30 @@
+Beidou:
+41 dmg/swing
+137 attack * .711 = 97.407
+slime has 56 def
+
+
+Non-critical Hit = ATK Power × Skill% × DMG Bonus% × EnemyDamageReduction
+                        × (1 - RES% + RESReduction%)
+
+ATK Power = [(Character's Base ATK + Weapon ATK)
+            × (1 + Weapon ATK% bonuses + Artifact ATK% bonuses)]
+            + Artifact ATK flat bonuses
+
+WHITE ATTACK = (Character's Base ATK + Weapon ATK)
+GREEN ATTACK = (WHITE ATTACK)
+                * (1 + WEAPON ATK% BONUS + ARTIFACT ATK% BONUS + SET ATK% BONUS)
+                + ARTIFACT FLAT ATK BONUS
+
+DEF HAS DIMINISHING RETURNS
+54 def:  423 dmg
+359 def: 312 dmg
+634 def: 296 dmg
+713 def: 281 dmg
+738 def: 276 dmg
+
+
+ALWAYS ROUND UP (AT END OF CALCULATIONS)
+
+bloodstained + martial artist + gladiator damage bonus (normal/charged attacks) calculations
+    done at damage time (not as player stats)
