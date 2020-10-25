@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import {Socket} from './Socket';
 
-export function Calculator(props) {
+export function Skills() {
     // character name is props.character
 }

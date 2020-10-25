@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 
-const [char, setChar] = useState("amber");
-const [charLevel, setCharLevel] = useState(1);
-const [charAscension, setCharAscension] = useState(0);
+const artifact = <Artifact />;
+const skill = <Skill />;
+const stat = <Stats />;
+const dropdown = <Dropdown />;
 
-const calculator = <Calculator character={char} />;
-
-React.DOM.render(calculator, document.getElementById('calc'))
+React.DOM.render(artifact, document.getElementById('arts'))
+React.DOM.render(skill, document.getElementById('skill'))
+React.DOM.render(stat, document.getElementById('stat'))
+React.DOM.render(dropdown, document.getElementById('drop'))
