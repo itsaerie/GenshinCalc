@@ -3,6 +3,7 @@
 '''
 
 poss_stats = [
+    'ELEMENT', 'WEAPON_TYPE',
     'HP_BASE', 'HP_PERC', 'HP_TOTAL',
     'ATK_BASE', 'ATK_PERC', 'ATK_TOTAL',
     'DEF_BASE', 'DEF_PERC', 'DEF_TOTAL',
