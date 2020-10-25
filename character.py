@@ -1,4 +1,7 @@
+'''
 # For holding character stats and everything
+'''
+
 poss_stats = [
     'HP_BASE', 'HP_PERC', 'HP_TOTAL',
     'ATK_BASE', 'ATK_PERC', 'ATK_TOTAL',
@@ -80,6 +83,23 @@ class Character:
         self.character['CRYO_DAMAGE'] = self.character['ATK_TOTAL'] * 1+self.character['CRYO_BONUS']
         self.character['GEO_DAMAGE'] = self.character['ATK_TOTAL'] * 1+self.character['GEO_BONUS']
         self.character['PHYSICAL_DAMAGE'] = self.character['ATK_TOTAL'] * 1+self.character['PHYSICAL_BONUS']
+
+class Skill:
+    def __init__(self, char, char_name, skill_name, skill_level):
+        # TODO FETCH SKILL FROM DB
+        # format from db is as:
+        #  "line 1 desc";"line 1 formula"
+        #  "line 2 desc";"line 2 formula""
+        #  ...etc
+        # formulas will be like "character['ATK_TOTAL']*.55+1283"
+        skill = {}
+        self.numSkills = len(skill)
+        for i in range(self.numSkills):
+            self.name[i] = skill['NAME'][i]
+            self.desc[i] = skill['DESCRIPTION'][i]
+            # Load in the character stats for the formulas
+            character = char.character # this is an array
+            self.stat[i] = eval(skill['FORMULA'][i]) # this returns a value
 
 class Weapon:
     def __init__(self, weapon_type, weapon_name, level):
