@@ -66,34 +66,34 @@
     ]
     },
     "Skill":{
-    "Name":"lightning Stiletto",
-    "Lightning Stiletto DMG":[0.504, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Slashing DMG":[1.68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Thunderclap Slash DMG": [0.84 * 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        "Name":"lightning Stiletto",
+        "Lightning Stiletto DMG":[0.504, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "Slashing DMG":[1.68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "Thunderclap Slash DMG": [0.84 * 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     },
     "Burst":{
-    "Name":"Starward Sword",
-    "Skill DMG":[0.88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Consecutive Slash DMG":[0.24 * 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Last Attack DMG":[1.89, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        "Name":"Starward Sword",
+        "Skill DMG":[0.88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "Consecutive Slash DMG":[0.24 * 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "Last Attack DMG":[1.89, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     },
     "Talent":{
     "Ascension 4":{
         "Base ATK":0,
         "CRITE_RATE":0.15,
-        "ENERGY_RECHARGE":0.15
+        "ENERGY_RECHARGE":0.15,
         "Modifier": "True"
         }
     },
     "Constellation":{
     "1":{
-        "Name":"Thundering Might"
+        "Name":"Thundering Might",
         "Recasting Stellar Restoration":{
             "ELECTRO_ATK_PERC":0.5
         }
     },
     "6":{
-        "Name":"Tenacious Star"
+        "Name":"Tenacious Star",
         "ELECTRO_ATK_PERC":0.15,
         "Modifier":"True"
         }
