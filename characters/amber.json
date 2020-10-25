@@ -81,17 +81,14 @@
   },
   "Constellation":{
     "1":{
-      "Name":"One Arrow to Rule Them All",
       "Second Arrow DMG":0.20
     },
     "2":{
-      "Name":"Bunny Triggered",
       "Explosive Bunny":{
         "Explosion DMG":200
       }
     },
     "6":{
-      "Name":"Wildfire",
       "ATK_PERC":0.15,
       "Modifier":"True"
     }
