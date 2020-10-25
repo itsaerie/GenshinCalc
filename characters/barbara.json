@@ -1,6 +1,6 @@
 {
-  "WEAPON_TYPE":"BOW",
-  "ELEMENT":"PYRO",
+  "WEAPON_TYPE":"CATALYST",
+  "ELEMENT":"HYDRO",
   "HP_BASE":[
     [793, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2038], 
     [2630, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3940],
@@ -38,9 +38,9 @@
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ],
   "Default":{
-    "Name":"Sharpshooter",
+    "Name":"Whisper of Water",
     "Normal":[
-      [0.361, 0.361, 0.464, 0.473, 0.593],
+      [0.378, 0.355, 0.41, 0.552],
       [],
       [],
       [],
@@ -50,8 +50,7 @@
       [],
       []
     ],
-    "Aimed Shot":[0.439, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Fully-Charged Aimed Shot":[1.24, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Charged Attack DMG":[1.66, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     "Plunge DMG":[0.568, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     "Low/High Plunge DMG":[
       [1.14, 1.42],
@@ -67,41 +66,69 @@
     ]
   },
   "Skill":{
-    "Name":"Explosive Puppet",
-    "Inherited HP":[0.414, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Explosion DMG":[123, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    "Name":"Let the Show Begin",
+    "HP Rgeneration Per Hit":[
+      [0.0075, 72],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    ],
+    "Continuous Regeneration":[
+      [0.04, 385],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    ],
+    "Droplet DMG":[0.584, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   "Burst":{
-    "Name":"Fiery Rain",
-    "Fiery Rain DMG Per Wave":[0.281, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Total Fiery Rain DMG":[505, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    "Name":"Shining Miracle",
+    "Healing Amount":[
+      [0.176, 1694],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    ]
   },
   "Talent":{
-    "Ascension 1":{
-      "Fiery Rain":{
-        "CRIT_RATE":0.10
-      }
-    },
-    "Ascension 4":{
-      "ATK_PERC":0.15,
-      "Modifier": "True"
-    }
   },
   "Constellation":{
-    "1":{
-      "Name":"One Arrow to Rule Them All",
-      "Second Arrow DMG":0.20
-    },
     "2":{
-      "Name":"Bunny Triggered",
-      "Explosive Bunny":{
-        "Explosion DMG":200
-      }
-    },
-    "6":{
-      "Name":"Wildfire",
-      "ATK_PERC":0.15,
-      "Modifier":"True"
+      "Name":"Vitality Burst",
+      "HYDRO_BONUS":0.15
     }
   }
 }
