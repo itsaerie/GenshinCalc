@@ -40,7 +40,7 @@
     "Default":{
     "Name":"Yunlai Swordsmanship",
     "Normal":[
-        [0.41, 0.41, 0.544, 0.315+0.344, 0.67],
+        [0.41, 0.41, 0.544, [0.315, 0.344], 0.67],
         [],
         [],
         [],
@@ -50,7 +50,7 @@
         [],
         []
     ],
-    "Charged DMG":[0.768 + 0.86, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Charged DMG":[[0.768, 0.86], 0, 0, 0, 0, 0, 0, 0, 0, 0],
     "Plunge DMG":[0.639, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     "Low/High Plunge DMG":[
         [1.28, 1.6],
@@ -66,15 +66,15 @@
     ]
     },
     "Skill":{
-        "Name":"lightning Stiletto",
+        "Name":"Lightning Stiletto",
         "Lightning Stiletto DMG":[0.504, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         "Slashing DMG":[1.68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "Thunderclap Slash DMG": [0.84 * 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        "Thunderclap Slash DMG": [[0.84, 2], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     },
     "Burst":{
         "Name":"Starward Sword",
         "Skill DMG":[0.88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "Consecutive Slash DMG":[0.24 * 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "Consecutive Slash DMG":[[0.24], 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         "Last Attack DMG":[1.89, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     },
     "Talent":{
