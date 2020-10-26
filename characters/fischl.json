@@ -83,7 +83,8 @@
     "1":{
       "Nightrider":{
         "Joint Atk DMG":0.22
-      }
+      },
+      "Modifer": "True"
     },
     "2":{
       "Nightrider":{
@@ -98,8 +99,9 @@
     },
     "6":{
       "Nightrider":{
-        "Bonus Electro DMG":2.0
-      }
+        "Joint Electro DMG":0.3
+      },
+      "Modifer": "True"
     }
   }
 }

@@ -86,7 +86,8 @@
     "2":{
       "Explosive Bunny":{
         "Explosion DMG":2.00
-      }
+      },
+      "Modifer": "True"
     },
     "6":{
       "ATK_PERC":0.15,

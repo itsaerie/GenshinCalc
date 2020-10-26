@@ -73,7 +73,7 @@
   },
   "Talent":{
     "Ascension 4":{
-      "ENERGY_RECHARGE":0.20,
+      "ENERGY_RECHARGE":0.30,
       "Modifier": "True"
     }
   },
