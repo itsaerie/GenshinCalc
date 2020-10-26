@@ -28,7 +28,7 @@
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ],
-  "ATK_PERC":[0, 0, 0, 0, 0, 0, 0],
+  "ATK_PERC":[0, 0, 0, 0.12, 0.12, 0, 0],
   "Default":{
     "Name":"Sharpshooter",
     "Normal":[
@@ -61,12 +61,12 @@
   "Skill":{
     "Name":"Explosive Puppet",
     "Inherited HP":[0.414, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Explosion DMG":[123, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    "Explosion DMG":[1.23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   "Burst":{
     "Name":"Fiery Rain",
     "Fiery Rain DMG Per Wave":[0.281, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Total Fiery Rain DMG":[505, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    "Total Fiery Rain DMG":[5.05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   "Talent":{
     "Ascension 1":{
@@ -85,7 +85,7 @@
     },
     "2":{
       "Explosive Bunny":{
-        "Explosion DMG":200
+        "Explosion DMG":2.00
       }
     },
     "6":{
