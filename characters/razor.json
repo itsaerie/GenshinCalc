@@ -1,6 +1,6 @@
 {
-  "WEAPON_TYPE":"CATALYST",
-  "ELEMENT":"HYDRO",
+  "WEAPON_TYPE":"CLAYMORE",
+  "ELEMENT":"ELECTRO",
   "HP_BASE":[
     [821, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2108], 
     [2721, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4076],
@@ -30,9 +30,9 @@
   ],
   "HP_PERC":[0, 0, 6, 12, 12, 0, 0],
   "Default":{
-    "Name":"Whisper of Water",
+    "Name":"Steel Fang",
     "Normal":[
-      [0.378, 0.355, 0.41, 0.552],
+      [0.959, 0.826, 1.03, 1.36],
       [],
       [],
       [],
@@ -42,10 +42,11 @@
       [],
       []
     ],
-    "Charged Attack DMG":[1.66, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    "Plunge DMG":[0.568, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Charged Attack Spinning DMG":[0.625, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Charged Attack Final DMG":[1.13, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Plunge DMG":[0.82, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     "Low/High Plunge DMG":[
-      [1.14, 1.42],
+      [1.64, 2.05],
       [],
       [],
       [],
@@ -58,68 +59,36 @@
     ]
   },
   "Skill":{
-    "Name":"Let the Show Begin",
-    "HP Rgeneration Per Hit":[
-      [0.0075, 72],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      []
-    ],
-    "Continuous Regeneration":[
-      [0.04, 385],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      []
-    ],
-    "Droplet DMG":[0.584, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    "Name":"Claw and Thunder",
+    "Press Skill DMG":[1.99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Hold Skill DMG":[2.95, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Energy Recharge Bonus":0.20
   },
   "Burst":{
-    "Name":"Shining Miracle",
-    "Healing Amount":[
-      [0.176, 1694],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      []
-    ]
+    "Name":"Lightning Fang",
+    "Elemental Burst DMG":[1.99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Soul Companion DMG":[2.95, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Normal ATK SPD Bonus":[0.20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "Electro RES Bonus":[0.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   "Talent":{
+    "Ascension 4":{
+      "ENERGY_RECHARGE":0.20,
+      "Modifier": "True"
+    }
   },
   "Constellation":{
     "2":{
-      "HYDRO_BONUS":0.15
+      "CRIT_RATE":0.10,
+      "Modifier": "True"
+    },
+    "4":{
+      "DEF_REDUC":0.15,
+      "Modifier": "True"
+    },
+    "6":{
+      "Electro DMG":1.0
     }
   }
 }
+  
