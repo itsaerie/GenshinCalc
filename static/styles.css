@@ -1,3 +1,7 @@
+.column {
+    width: 33.3%
+}
+
 .sidebar { /* https://www.w3schools.com/howto/howto_js_collapse_sidebar.asp */
     height: 100%; /* 100% Full-height */
     width: 250px; /* 0 width - change this with JavaScript */
