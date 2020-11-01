@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Artifact } from './Artifact';
 import { Dropdown } from './Dropdown';
-import { Skill } from './Skill';
+import { Skill } from './Skills';
 import { Stats } from './Stats';
 import { STATS } from './CharStats';
 

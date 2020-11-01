@@ -1,13 +1,13 @@
 // Containing the CAPS_CASE names of every stat that will be passed down via React's useState
-CHAR_DATA = [
+const CHAR_DATA = [
     'CHAR_NAME', 'CHAR_ASCENSION', 'CHAR_LEVEL'
 ]
 
-WEAP_DATA = [
+const WEAP_DATA = [
     'WEAP_NAME', 'WEAP_ASCENSION', 'WEAP_LEVEL'
 ]
 
-STATS = [
+const STATS = [
     'ELEMENT', 'WEAPON_TYPE',
     'HP_BASE', 'HP_PERC', 'HP_TOTAL',
     'ATK_BASE', 'ATK_PERC', 'ATK_TOTAL',
@@ -29,7 +29,7 @@ STATS = [
     'PHYSICAL_DAMAGE', 'PHYSICAL_BONUS', 'PHYSICAL_RESISTANCE',
 ]
 
-export default {
+export {
     CHAR_DATA,
     WEAP_DATA,
     STATS
