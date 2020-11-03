@@ -1,5 +1,16 @@
 import React, {useState} from 'react';
 
+// all fields are read-only
 export function Stats(props) {
-    // character name is props.character
+    let charInfo = props.charInfo;
+    let weapInfo = props.weapInfo;
+    let statState = props.statState;
+
+    return (
+        <div className="stats">
+            <p>
+                filler text
+            </p>
+        </div>
+    )
 }
