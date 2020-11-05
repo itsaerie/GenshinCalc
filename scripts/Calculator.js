@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-import Col from 'react-bootstrap/Col'
-import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/lib/Col'
+// import Container from 'react-bootstrap/Container';
 
 import { Artifact } from './Artifact';
 import { Dropdown } from './Dropdown';
-import { Skill } from './Skills';
+import { Skills } from './Skills';
 import { Stats } from './Stats';
 import { STATS } from './CharStats';
 
@@ -25,7 +25,7 @@ let baseStatDict = Object.assign({}, ...STATS.map((stat) => ({ stat: 0.0 })))
 
 
 // Container for all of the different things in the calculator
-export default function Calculator() {
+export function Calculator() {
     // Shared char, weapon, stats
     const [charInfo, setCharInfo] = useState(baseCharInfo);
     const [weapInfo, setWeapInfo] = useState(baseWeapInfo);
@@ -50,7 +50,7 @@ export default function Calculator() {
                     weapInfo, setWeapInfo,
                     statState, setStatState
                 )}
-                {Skill(
+                {Skills(
                     charInfo, setCharInfo,
                     statState
                 )}
@@ -65,3 +65,5 @@ export default function Calculator() {
         </Container>
     )
 };
+
+export default Calculator;

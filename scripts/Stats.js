@@ -1,18 +1,18 @@
 import React, {useState} from 'react';
 
-// Char is read/write
-// Stats is read only
-export function Skills(props) {
+// all fields are read-only
+export function Stats(props) {
     let charInfo = props.charInfo;
-    let setCharInfo = props.setCharInfo;
+    let weapInfo = props.weapInfo;
     let statState = props.statState;
-    
-    // gonna wanna use popoers (react-bootstrap)
+
     return (
-        <div className="skills">
+        <div className="stats">
             <p>
                 filler text
             </p>
         </div>
     )
 }
+
+export default Stats;

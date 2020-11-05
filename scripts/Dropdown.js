@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import Form from 'react-bootstrap/Form'
+import Form from 'react-bootstrap/lib/Form'
 
 // Toggleables about passive abilities and shit
 // Dropdowns to change the char and weap values
-export default function Dropdown(props) {
+export function Dropdown(props) {
     // pulling these from props
     let charInfo = props.charInfo;
     let setCharInfo = props.setCharInfo;
@@ -106,3 +106,5 @@ export default function Dropdown(props) {
         </div>
     )
 }
+
+export default Dropdown;
