@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import Col from 'react-bootstrap/lib/Col'
-// import Container from 'react-bootstrap/Container';
+import Container from 'react-bootstrap/Container';
 
 import { Artifact } from './Artifact';
 import { Dropdown } from './Dropdown';
