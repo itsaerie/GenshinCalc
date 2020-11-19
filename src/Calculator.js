@@ -1,67 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import Col from 'react-bootstrap/Col'
+import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 
 import { Artifact } from './Artifact';
 import { Dropdown } from './Dropdown';
 import { Skills } from './Skills';
 import { Stats } from './Stats';
-import { STATS } from './CharStats';
+import { Character, Weapon, Artifacts, CalcStats } from './Wrappers'
 
-// This space is for the default values because amber is heccin' amazing I promise
-let baseCharInfo = {
-    'CHAR_NAME': 'Amber',
-    'CHAR_ASCENSION': 0,
-    'CHAR_LEVEL': 0
-}
-let baseWeapInfo = {
-    'WEAP_NAME': 'Favonius Greatsword',
-    'WEAP_ASCENSION': 0,
-    'WEAP_LEVEL': 0
-}
 // We're going map each variable in the array to a strongly typed float
-let baseStatDict = Object.assign({}, ...STATS.map((stat) => ({ stat: 0.0 })))
-
+//let baseStatDict = Object.assign({}, ...STATS.map((stat) => ({ stat: 0.0 })))
 
 // Container for all of the different things in the calculator
 export function Calculator() {
     // Shared char, weapon, stats
-    const [charInfo, setCharInfo] = useState(baseCharInfo);
-    const [weapInfo, setWeapInfo] = useState(baseWeapInfo);
-    const [statState, setStatState] = useState(baseStatDict);
+    let char = new Character();
+    let weap = new Weapon();
+    let florafact = new Artifacts('Flower');
+    let featherfact = new Artifacts('Feather');
+    let timefact = new Artifacts('Time');
+    let cupfact = new Artifacts('Cup');
+    let hatifact = new Artifacts('Hat');
+    let stats = new CalcStats();
 
     // 3-column container:
     //  left = stats
     //  middle = dropdown above skills
     //  right = artifact
     return (
-        <Container>
-            <Col>
-                {Stats(
-                    charInfo, 
-                    weapInfo, 
-                    statState
-                )}
-            </Col>
-            <Col xs={7}>
-                {Dropdown(
-                    charInfo, setCharInfo,
-                    weapInfo, setWeapInfo,
-                    statState, setStatState
-                )}
-                {Skills(
-                    charInfo, setCharInfo,
-                    statState
-                )}
-            </Col>
-            <Col xs={3}>
-                {Artifact(
-                    charInfo, setCharInfo,
-                    weapInfo, setWeapInfo,
-                    statState, setStatState
-                )}
-            </Col>
+        <Container fluid>
+            <Row>
+                <Col>
+                    <Stats
+                        char={char} weap={weap}
+                        florafact={florafact}
+                        featherfact={featherfact}
+                        timefact={timefact}
+                        cupfact={cupfact}
+                        hatifact={hatifact}
+                        stats={stats}
+                    />
+                </Col>
+                <Col>
+                    <Row>
+                        <Dropdown char={char} weap={weap} />
+                    </Row>
+                    <br /><br /><br /><br />
+                    <Row>
+                        {Skills(
+                            char
+                        )}
+                    </Row>
+                </Col>
+                <Col>
+                    <Artifact
+                        florafact={florafact}
+                        featherfact={featherfact}
+                        timefact={timefact}
+                        cupfact={cupfact}
+                        hatifact={hatifact}
+                    />
+                </Col>
+            </Row>
         </Container>
     )
 };
