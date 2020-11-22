@@ -82,22 +82,27 @@ class Character {
      */
     setLevel(level) {
         this.level = level;
-        // check ascension and attempt to enforce
-        if (level < 20) {
-            this.ascension = 0;
-        } else if (level < 40) {
+        // enforce ascension
+        // lvl 90 -> 90-0-20=70/10 => asc 7 -1 => asc 6
+        // lvl 89 -> 89-9-20=60/10 => asc 6
+        // lvl 80 -> 80-0-20=60/10 => asc 6
+        // lvl 39 -> 39-9-20=10/10 => asc 1
+        // lvl 29 -> 29-9-20=0/10  => asc 0 +1 => asc 1
+        // lvl 19 -> 19-9-20=-10/10=> asc-1 => asc 0
+        // lvl 9  -> 9-9-20=-20/10 => asc-2 => asc 0
+        this.ascension = (level-(level%10)-20)/10;
+        if (this.ascension === 7)
+            this.ascension --;
+        if (this.ascension === 0)
             this.ascension = 1;
-        } else {
-            this.ascension = (level - 30 - (level % 10)) / 10;
-        }
+        if (this.ascension < 0)
+            this.ascension = 0;
     }
     /**
      * Attempt to set level and ascension
-     * @param {Number} level - Expected Level
      * @param {Number} ascension - Expected Ascension
      */
-    setLevelAndAscension(level, ascension) {
-        this.level = level;
+    setAscension(ascension) {
         this.ascension = ascension;
     }
 }
@@ -140,22 +145,27 @@ class Weapon {
      */
     setLevel(level) {
         this.level = level;
-        // check ascension and attempt to enforce
-        if (level < 20) {
-            this.ascension = 0;
-        } else if (level < 40) {
+        // enforce ascension
+        // lvl 90 -> 90-0-20=70/10 => asc 7 -1 => asc 6
+        // lvl 89 -> 89-9-20=60/10 => asc 6
+        // lvl 80 -> 80-0-20=60/10 => asc 6
+        // lvl 39 -> 39-9-20=10/10 => asc 1
+        // lvl 29 -> 29-9-20=0/10  => asc 0 +1 => asc 1
+        // lvl 19 -> 19-9-20=-10/10=> asc-1 => asc 0
+        // lvl 9  -> 9-9-20=-20/10 => asc-2 => asc 0
+        this.ascension = (level-(level%10)-20)/10;
+        if (this.ascension === 7)
+            this.ascension --;
+        if (this.ascension === 0)
             this.ascension = 1;
-        } else {
-            this.ascension = (level - 30 - (level % 10)) / 10;
-        }
+        if (this.ascension < 0)
+            this.ascension = 0;
     }
     /**
      * Attempt to set level and ascension
-     * @param {Number} level - Expected Level
      * @param {Number} ascension - Expected Ascension
      */
-    setLevelAndAscension(level, ascension) {
-        this.level = level;
+    setAscension(ascension) {
         this.ascension = ascension;
     }
 }

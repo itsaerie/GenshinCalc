@@ -1,10 +1,8 @@
 import React from 'react';
 
-import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
+import { rerender } from './index';
 
 // Toggleables about passive abilities and shit
 // Dropdowns to change the char and weap values
@@ -47,10 +45,13 @@ export function Dropdown(props) {
     return (
         <div className="drop">
             <Form key="classChange">
-                <Form.Group>
+                <Form.Group controlId="Character Selection">
                     <Form.Label>Character</Form.Label>
                     {/* To select level */}
-                    <Form.Control as="select" defaultValue={chars[0]}>
+                    <Form.Control as="select" defaultValue={chars[0]} onChange={(event) => {
+                        props.char.setName(event.target.value);
+                        rerender();
+                    }}>
                         {chars.map((char) => (
                             <option key={char}>{char}</option>
                         ))}
@@ -60,7 +61,9 @@ export function Dropdown(props) {
                     <Form.Group as={Col}>
                         <Form.Label>Level</Form.Label>
                         {/* To select level */}
-                        <Form.Control as="select" defaultValue={levels[0]} onChange={props.char.setLevel(levels[0])}>
+                        <Form.Control as="select" defaultValue={levels[0]} onChange={(event) => {
+                            props.char.setLevel(event.target.value);
+                        }}>
                             {levels.map((level) => (
                                 <option key={level}>{level}</option>
                             ))}
@@ -69,7 +72,9 @@ export function Dropdown(props) {
                     <Form.Group as={Col}>
                         <Form.Label>Ascension</Form.Label>
                         {/* To select ascension */}
-                        <Form.Control as="select" defaultValue={ascensions[0]} onChange={props.char.setLevel(levels[0])}>
+                        <Form.Control as="select" defaultValue={ascensions[0]} onChange={(event) => {
+                            props.char.setAscension(event.target.value);
+                        }}>
                             {ascensions.map((ascension) => (
                                 <option key={ascension}>{ascension}</option>
                             ))}
@@ -79,7 +84,9 @@ export function Dropdown(props) {
                 <Form.Group>
                     <Form.Label>Weapon</Form.Label>
                     {/* To select level */}
-                    <Form.Control as="select" defaultValue={weaps[0]}>
+                    <Form.Control as="select" defaultValue={weaps[0]} onChange={(event) => {
+                        props.weap.setName(event.target.value);
+                    }}>
                         {weaps.map((weap) => (
                             <option key={weap}>{weap}</option>
                         ))}
@@ -89,7 +96,9 @@ export function Dropdown(props) {
                     <Form.Group as={Col}>
                         <Form.Label>Level</Form.Label>
                         {/* To select level */}
-                        <Form.Control as="select" defaultValue={levels[0]} onChange={props.weap.setLevel(levels[0])}>
+                        <Form.Control as="select" defaultValue={levels[0]}  onChange={(event) => {
+                            props.weap.setLevel(event.target.value);
+                        }}>
                             {levels.map((level) => (
                                 <option key={level}>{level}</option>
                             ))}
@@ -98,7 +107,9 @@ export function Dropdown(props) {
                     <Form.Group as={Col}>
                         <Form.Label>Ascension</Form.Label>
                         {/* To select ascension */}
-                        <Form.Control as="select" defaultValue={ascensions[0]} onChange={props.weap.setLevel(levels[0])}>
+                        <Form.Control as="select" defaultValue={ascensions[0]}  onChange={(event) => {
+                            props.weap.setAscension(event.target.value);
+                        }}>
                             {ascensions.map((ascension) => (
                                 <option key={ascension}>{ascension}</option>
                             ))}

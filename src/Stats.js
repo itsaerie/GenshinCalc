@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 // all fields are read-only
 export function Stats(props) {
     //  stats is props.stats
-    console.log(Object.keys(props.stats.stats))
+    //console.log(Object.keys(props.stats.stats))
 
     // legit go do all the calculations given the character, weapon, and artifacts
 

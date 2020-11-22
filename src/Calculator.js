@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -16,6 +16,8 @@ import { Character, Weapon, Artifacts, CalcStats } from './Wrappers'
 // Container for all of the different things in the calculator
 export function Calculator() {
     // Shared char, weapon, stats
+    const {text, setText} = useState("text");
+    //const {char, setChar} = useState[new Character()];
     let char = new Character();
     let weap = new Weapon();
     let florafact = new Artifacts('Flower');
@@ -49,9 +51,9 @@ export function Calculator() {
                     </Row>
                     <br /><br /><br /><br />
                     <Row>
-                        {Skills(
-                            char
-                        )}
+                        <Skills
+                            char={char}
+                        />
                     </Row>
                 </Col>
                 <Col>

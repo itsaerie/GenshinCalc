@@ -3,13 +3,13 @@ import React from 'react';
 // Char is read/write
 // Stats is read only
 export function Skills(props) {
+    // props.char is char
     
-    // gonna wanna use popoers (react-bootstrap)
+    // gonna wanna use popovers (react-bootstrap)
     return (
         <div className="skills">
-            <p>
-                ill do skills eventually
-            </p>
+            {props.char.name}
+            {console.log(props.char)}
         </div>
     )
 }
