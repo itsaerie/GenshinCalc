@@ -3,12 +3,13 @@
 '''
 
 poss_stats = [
+    'ELEMENT', 'WEAPON_TYPE',
     'HP_BASE', 'HP_PERC', 'HP_TOTAL',
     'ATK_BASE', 'ATK_PERC', 'ATK_TOTAL',
     'DEF_BASE', 'DEF_PERC', 'DEF_TOTAL',
     'ELEMENTAL_MASTERY',
     'STAMINA', # this shit is useless
-    'CRIT_PERC', 'CRIT_DAMAGE',
+    'CRIT_RATE', 'CRIT_DAMAGE',
     'HEAL_BONUS', 'HEAL_RECEIVED',
     'ENERGY_RECHARGE',
     'COOLDOWN_REDUCTION',
