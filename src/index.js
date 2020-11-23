@@ -6,7 +6,7 @@ import Calculator from './Calculator';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const page = ReactDOM.render(
+ReactDOM.render(
   <React.StrictMode>
     <Calculator />
   </React.StrictMode>,
@@ -16,7 +16,7 @@ const page = ReactDOM.render(
 // Callback for rerendering page
 // --- MIGHT BE REALLY INEFFICIENT ---
 export function rerender() {
-  page.forceUpdate();
+  //page.forceUpdate();
 }
 
 // If you want to start measuring performance in your app, pass a function
