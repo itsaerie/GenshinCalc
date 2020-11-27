@@ -135,7 +135,7 @@ export function Calculator() {
             slot: 'Feather',
             set: '',
             // main stats
-            mainStat: 'ATK',
+            mainStat: 'ATK_BASE',
             mainVal: 0,
             // substats
             sub1: '',
@@ -212,59 +212,60 @@ export function Calculator() {
         let statDict = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
 
         // TODO load char stats
+        let charStats = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
+        // try to map it to statDict
+        Object.keys(charStats).map((stat) => {
+            statDict[stat] += charStats[stat]
+            statDict[stat] = Number(statDict[stat].toFixed(2))
+            return null
+        })
         // TODO load weapon stats
+        let weapStats = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
+        // try to map it to statDict
+        Object.keys(weapStats).map((stat) => {
+            statDict[stat] += weapStats[stat]
+            statDict[stat] = Number(statDict[stat].toFixed(2))
+            return null
+        })
 
         // add artifact values
         let artArray = [flower, feather, hourglass, goblet, hat];
-        let artStats = {}
+        let artStats = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
         artArray.map((artifact) => {
             // main stat
-            if (artStats[artifact.mainStat])
-                artStats[artifact.mainStat] += Number(artifact.mainVal)
-            else
-                artStats[artifact.mainStat] = Number(artifact.mainVal)
+            artStats[artifact.mainStat] += Number(artifact.mainVal)
             // substat 1
-            if (artStats[artifact.sub1])
-                artStats[artifact.sub1] += Number(artifact.val1)
-            else
-                artStats[artifact.sub1] = Number(artifact.val1)
+            artStats[artifact.sub1] += Number(artifact.val1)
             // substat 2
-            if (artStats[artifact.sub2])
-                artStats[artifact.sub2] += Number(artifact.val2)
-            else
-                artStats[artifact.sub2] = Number(artifact.val2)
+            artStats[artifact.sub2] += Number(artifact.val2)
             // substat 3
-            if (artStats[artifact.sub3])
-                artStats[artifact.sub3] += Number(artifact.val3)
-            else
-                artStats[artifact.sub3] = Number(artifact.val3)
+            artStats[artifact.sub3] += Number(artifact.val3)
             // substat 4
-            if (artStats[artifact.sub4])
-                artStats[artifact.sub4] += Number(artifact.val4)
-            else
-                artStats[artifact.sub4] = Number(artifact.val4)
+            artStats[artifact.sub4] += Number(artifact.val4)
 
             return null
         })
         // try to map it to statDict
         Object.keys(artStats).map((stat) => {
             statDict[stat] += artStats[stat]
+            statDict[stat] = Number(statDict[stat].toFixed(2))
             return null
         })
+        console.log('ref')
 
         // calculate the 'total' values now
-        statDict['HP_TOTAL'] = (statDict['HP_BASE'] * statDict['HP_PERC']) / 100 + statDict['HP_BASE'];
-        statDict['ATK_TOTAL'] = (statDict['ATK_BASE'] * statDict['ATK_PERC']) / 100 + statDict['ATK_BASE'];
-        statDict['DEF_TOTAL'] = (statDict['DEF_BASE'] * statDict['DEF_PERC']) / 100 + statDict['DEF_BASE'];
+        statDict['HP_TOTAL'] = Number(((statDict['HP_BASE'] * statDict['HP_PERC']) / 100 + statDict['HP_BASE']).toFixed(2));
+        statDict['ATK_TOTAL'] = Number(((statDict['ATK_BASE'] * statDict['ATK_PERC']) / 100 + statDict['ATK_BASE']).toFixed(2));
+        statDict['DEF_TOTAL'] = Number(((statDict['DEF_BASE'] * statDict['DEF_PERC']) / 100 + statDict['DEF_BASE']).toFixed(2));
         // and damages for elements
-        statDict['PYRO_DAMAGE'] = statDict['ATK_TOTAL'] * statDict['PYRO_BONUS'] / 100 + statDict['ATK_TOTAL'];
-        statDict['HYDRO_DAMAGE'] = statDict['ATK_TOTAL'] * statDict['HYDRO_BONUS'] / 100 + statDict['ATK_TOTAL'];
-        statDict['DENDRO_DAMAGE'] = statDict['ATK_TOTAL'] * statDict['DENDRO_BONUS'] / 100 + statDict['ATK_TOTAL'];
-        statDict['ELECTRO_DAMAGE'] = statDict['ATK_TOTAL'] * statDict['ELECTRO_BONUS'] / 100 + statDict['ATK_TOTAL'];
-        statDict['ANEMO_DAMAGE'] = statDict['ATK_TOTAL'] * statDict['ANEMO_BONUS'] / 100 + statDict['ATK_TOTAL'];
-        statDict['CRYO_DAMAGE'] = statDict['ATK_TOTAL'] * statDict['CRYO_BONUS'] / 100 + statDict['ATK_TOTAL'];
-        statDict['GEO_DAMAGE'] = statDict['ATK_TOTAL'] * statDict['GEO_BONUS'] / 100 + statDict['ATK_TOTAL'];
-        statDict['PHYSICAL_DAMAGE'] = statDict['ATK_TOTAL'] * statDict['PHYSICAL_BONUS'] / 100 + statDict['ATK_TOTAL'];
+        statDict['PYRO_DAMAGE'] = Number((statDict['ATK_TOTAL'] * statDict['PYRO_BONUS'] / 100 + statDict['ATK_TOTAL']).toFixed(2));
+        statDict['HYDRO_DAMAGE'] = Number((statDict['ATK_TOTAL'] * statDict['HYDRO_BONUS'] / 100 + statDict['ATK_TOTAL']).toFixed(2));
+        statDict['DENDRO_DAMAGE'] = Number((statDict['ATK_TOTAL'] * statDict['DENDRO_BONUS'] / 100 + statDict['ATK_TOTAL']).toFixed(2));
+        statDict['ELECTRO_DAMAGE'] = Number((statDict['ATK_TOTAL'] * statDict['ELECTRO_BONUS'] / 100 + statDict['ATK_TOTAL']).toFixed(2));
+        statDict['ANEMO_DAMAGE'] = Number((statDict['ATK_TOTAL'] * statDict['ANEMO_BONUS'] / 100 + statDict['ATK_TOTAL']).toFixed(2));
+        statDict['CRYO_DAMAGE'] = Number((statDict['ATK_TOTAL'] * statDict['CRYO_BONUS'] / 100 + statDict['ATK_TOTAL']).toFixed(2));
+        statDict['GEO_DAMAGE'] = Number((statDict['ATK_TOTAL'] * statDict['GEO_BONUS'] / 100 + statDict['ATK_TOTAL']).toFixed(2));
+        statDict['PHYSICAL_DAMAGE'] = Number((statDict['ATK_TOTAL'] * statDict['PHYSICAL_BONUS'] / 100 + statDict['ATK_TOTAL']).toFixed(2));
 
         return statDict;
     }
@@ -692,7 +693,7 @@ export function Calculator() {
                                             </Form.Control>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setFlower(flower => ({ ...flower, mainVal: event.target.value }));
                                                 setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                             }} />
@@ -715,7 +716,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, val1: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -738,7 +739,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, val2: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -763,7 +764,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, val3: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -786,7 +787,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, val4: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -810,11 +811,11 @@ export function Calculator() {
                                                 setFeather(feather => ({ ...feather, mainStat: event.target.value }));
                                                 setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                             }}>
-                                                <option key={"ATK_BASE"}>{"ATK_BASE"}</option>{"HP_BASE"}
+                                                <option key={"ATK_BASE"}>{"ATK_BASE"}</option>{"ATK_BASE"}
                                             </Form.Control>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setFeather(feather => ({ ...feather, mainVal: event.target.value }));
                                                 setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                             }} />
@@ -837,7 +838,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, val1: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -860,7 +861,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, val2: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -885,7 +886,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, val3: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -908,7 +909,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, val4: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -938,7 +939,7 @@ export function Calculator() {
                                             </Form.Control>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setHourglass(hourglass => ({ ...hourglass, mainVal: event.target.value }));
                                                 setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                             }} />
@@ -961,7 +962,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, val1: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -984,7 +985,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, val2: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1009,7 +1010,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, val3: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1032,7 +1033,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, val4: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1062,7 +1063,7 @@ export function Calculator() {
                                             </Form.Control>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setGoblet(goblet => ({ ...goblet, mainVal: event.target.value }));
                                                 setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                             }} />
@@ -1085,7 +1086,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, val1: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1108,7 +1109,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, val2: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1133,7 +1134,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, val3: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1156,7 +1157,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, val4: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1186,7 +1187,7 @@ export function Calculator() {
                                             </Form.Control>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setHat(hat => ({ ...hat, mainVal: event.target.value }));
                                                 setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                             }} />
@@ -1209,7 +1210,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, val1: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1232,7 +1233,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, val2: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1257,7 +1258,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, val3: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
@@ -1280,7 +1281,7 @@ export function Calculator() {
                                                     </Form.Control>
                                                 </Col>
                                                 <Col>
-                                                    <Form.Control as='input' type="number" step="0.01" placeholder={0} onChange={(event) => {
+                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, val4: event.target.value }));
                                                         setStats(calcStats(flower, feather, hourglass, goblet, hat));
                                                     }} />
