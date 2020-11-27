@@ -24,3 +24,9 @@ yarn-error.log*
 
 # ignore this for now
 /genshin-calc
+
+#vscode
+.vscode/
+
+# logs
+debug.log
