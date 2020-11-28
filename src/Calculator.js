@@ -6,91 +6,9 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
-const STATS = [
-    '', // this is a filler for blank and unused stats
-    'HP_BASE', 'HP_PERC', 'HP_TOTAL',
-    'ATK_BASE', 'ATK_PERC', 'ATK_TOTAL',
-    'DEF_BASE', 'DEF_PERC', 'DEF_TOTAL',
-    'ELEMENTAL_MASTERY',
-    'STAMINA', // this shit is useless
-    'CRIT_RATE', 'CRIT_DAMAGE',
-    'HEAL_BONUS', 'HEAL_RECEIVED',
-    'ENERGY_RECHARGE',
-    'COOLDOWN_REDUCTION',
-    'POWERFUL_SHIELD',
-    'PYRO_DAMAGE', 'PYRO_BONUS', 'PYRO_RESISTANCE',
-    'HYDRO_DAMAGE', 'HYDRO_BONUS', 'HYDRO_RESISTANCE',
-    'DENDRO_DAMAGE', 'DENDRO_BONUS', 'DENDRO_RESISTANCE',
-    'ELECTRO_DAMAGE', 'ELECTRO_BONUS', 'ELECTRO_RESISTANCE',
-    'ANEMO_DAMAGE', 'ANEMO_BONUS', 'ANEMO_RESISTANCE',
-    'CRYO_DAMAGE', 'CRYO_BONUS', 'CRYO_RESISTANCE',
-    'GEO_DAMAGE', 'GEO_BONUS', 'GEO_RESISTANCE',
-    'PHYSICAL_DAMAGE', 'PHYSICAL_BONUS', 'PHYSICAL_RESISTANCE',
-]
-const ASCENSIONS = [
-    0, 1, 2, 3, 4, 5, 6
-]
-const CHARS = [
-    "Amber",
-    "Ningguang",
-    "Razor"
-]
-const LEVELS = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-    20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-    30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-    40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
-    50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
-    60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
-    70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
-    80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
-    90
-]
-const WEAPONS = {
-    "Bow": ['Favonius Warbow'],
-    "Catalyst": [],
-    "Greatsword": ["The Bell"],
-    "Spear": [],
-    "Sword": [],
-}
-const ART_SUBSTATS = [
-    'HP_BASE', 'HP_PERC',
-    'ATK_BASE', 'ATK_PERC',
-    'DEF_BASE', 'DEF_PERC',
-    'ELEMENTAL_MASTERY',
-    'CRIT_RATE', 'CRIT_DAMAGE',
-    'ENERGY_RECHARGE'
-]
-const ART_MAIN_HOURGLASS = [
-    'HP_PERC',
-    'DEF_PERC',
-    'ATK_PERC',
-    'ELEMENTAL_MASTERY',
-    'ENERGY_RECHARGE'
-]
-const ART_MAIN_GOBLET = [
-    'HP_PERC',
-    'DEF_PERC',
-    'ATK_PERC',
-    'ELEMENTAL_MASTERY',
-    'PYRO_BONUS',
-    'HYDRO_BONUS',
-    'DENDRO_BONUS',
-    'ELECTRO_BONUS',
-    'ANEMO_BONUS',
-    'CRYO_BONUS',
-    'GEO_BONUS',
-    'PHYSICAL_BONUS',
-]
-const ART_MAIN_HAT = [
-    'HP_PERC',
-    'DEF_PERC',
-    'ATK_PERC',
-    'ELEMENTAL_MASTERY',
-    'CRIT_RATE', 'CRIT_DAMAGE',
-    'HEAL_BONUS'
-]
+// local imports
+import { STATS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT } from './StatVals';
+import { ASCENSIONS, CHARS, LEVELS, WEAPONS } from './GenVals'
 
 // Container for all of the different things in the calculator
 export function Calculator() {
@@ -269,12 +187,6 @@ export function Calculator() {
 
         return statDict;
     }
-
-    //console.log(calcStats(flower, feather, hourglass, goblet, hat))
-    //console.log(stats)
-
-    // wonder if i update stats here
-    //setStats(stats => ({...stats, HP_BASE: char['HP_BASE']+weap['HP_BASE']+flower['HP_BASE']}))
 
     // 3-column container:
     //  left = stats
