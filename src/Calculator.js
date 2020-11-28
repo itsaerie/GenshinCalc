@@ -7,8 +7,9 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
 // local imports
+import { CHARINFO } from './CharVals'
+import { ASCENSIONS, CHARS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
 import { STATS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT } from './StatVals';
-import { ASCENSIONS, CHARS, LEVELS, WEAPONS } from './GenVals'
 
 // Container for all of the different things in the calculator
 export function Calculator() {
@@ -17,10 +18,12 @@ export function Calculator() {
         {
             name: CHARS[0],
             level: LEVELS[0],
-            ascension: ASCENSIONS[0],
-            type: "Bow"
+            ascension: ASCENSIONS[0]
         }
     );
+    const [skillLevels, setSkillLevels] = useState(
+        [1, 1, 1]
+    )
     // basic weapon stuff
     const [weap, setWeap] = useState(
         {
@@ -126,17 +129,30 @@ export function Calculator() {
     )
 
     // a function which updates all of the stats given char, weap, and artifact input
-    function calcStats(flower, feather, hourglass, goblet, hat) {
+    function calcStats(char, weap, flower, feather, hourglass, goblet, hat) {
         let statDict = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
 
-        // TODO load char stats
+        // load char stats
         let charStats = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
+        // index 1 is ascension (char.ascension)
+        // index 2 is level (char.level)
+        let calcLevel = char.level
+        if (char.ascension < 2) {
+            calcLevel -= 1 + char.ascension * 19
+        } else {
+            calcLevel -= 20 + (char.ascension * 10)
+        }
+        charStats["HP_BASE"] = CHARINFO[char.name]["HP_BASE"][char.ascension][calcLevel]
+        charStats["ATK_BASE"] = CHARINFO[char.name]["ATK_BASE"][char.ascension][calcLevel]
+        charStats["DEF_BASE"] = CHARINFO[char.name]["DEF_BASE"][char.ascension][calcLevel]
+        charStats[CHARINFO[char.name]["BONUS_STAT"]] = CHARINFO[char.name][CHARINFO[char.name]["BONUS_STAT"]][char.ascension]
         // try to map it to statDict
         Object.keys(charStats).map((stat) => {
             statDict[stat] += charStats[stat]
             statDict[stat] = Number(statDict[stat].toFixed(2))
             return null
         })
+
         // TODO load weapon stats
         let weapStats = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
         // try to map it to statDict
@@ -169,7 +185,6 @@ export function Calculator() {
             statDict[stat] = Number(statDict[stat].toFixed(2))
             return null
         })
-        console.log('ref')
 
         // calculate the 'total' values now
         statDict['HP_TOTAL'] = Number(((statDict['HP_BASE'] * statDict['HP_PERC']) / 100 + statDict['HP_BASE']).toFixed(2));
@@ -186,6 +201,53 @@ export function Calculator() {
         statDict['PHYSICAL_DAMAGE'] = Number((statDict['ATK_TOTAL'] * statDict['PHYSICAL_BONUS'] / 100 + statDict['ATK_TOTAL']).toFixed(2));
 
         return statDict;
+    }
+
+    // a function which returns skill with given stats
+    function skillDefault(char, skillLevels, stats) {
+        return (
+            <Card> {/** Default */}
+                {CHARINFO[char.name]["Default"]["Name"]} Level
+                <Form.Control as="select" defaultValue={skillLevels[0]} onChange={(event) => {
+                    setSkillLevels(skillLevels => ({ ...skillLevels, 0: event.target.value }));
+                    setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+                }}>
+                    {SKILLLEVELS.map((lvl) => (
+                        <option key={lvl}>{lvl}</option>
+                    ))}
+                </Form.Control>
+            </Card>
+        )
+    }
+    function skillSkill(char, skillLevels, stats) {
+        return (
+            <Card> {/** Skill */}
+                {CHARINFO[char.name]["Skill"]["Name"]} level
+                <Form.Control as="select" defaultValue={skillLevels[1]} onChange={(event) => {
+                    setSkillLevels(skillLevels => ({ ...skillLevels, 1: event.target.value }));
+                    setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+                }}>
+                    {SKILLLEVELS.map((lvl) => (
+                        <option key={lvl}>{lvl}</option>
+                    ))}
+                </Form.Control>
+            </Card>
+        )
+    }
+    function skillBurst(char, skillLevels, stats) {
+        return (
+            <Card> {/** Burst */}
+                {CHARINFO[char.name]["Burst"]["Name"]} level
+                <Form.Control as="select" defaultValue={skillLevels[2]} onChange={(event) => {
+                    setSkillLevels(skillLevels => ({ ...skillLevels, 2: event.target.value }));
+                    setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+                }}>
+                    {SKILLLEVELS.map((lvl) => (
+                        <option key={lvl}>{lvl}</option>
+                    ))}
+                </Form.Control>
+            </Card>
+        )
     }
 
     // 3-column container:
@@ -501,91 +563,108 @@ export function Calculator() {
                 </Col>
                 <Col>
                     <Row> {/**Dropdown menus for char and weapon selection */}
-                        <Form key="classChange">
-                            <Form.Group controlId="Character Selection">
-                                <Form.Label>Character</Form.Label>
-                                {/* To select char */}
-                                <Form.Control as="select" defaultValue={char['name']} onChange={(event) => {
-                                    setChar(char => ({ ...char, name: event.target.value }));
-                                    setStats(calcStats(flower, feather, hourglass, goblet, hat));
-                                }}>
-                                    {CHARS.map((char) => (
-                                        <option key={char}>{char}</option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
-                            <Form.Row>
-                                <Form.Group as={Col}>
-                                    <Form.Label>Level</Form.Label>
-                                    {/* To select level */}
-                                    <Form.Control as="select" defaultValue={char['level']} onChange={(event) => {
-                                        setChar(char => ({ ...char, level: Number(event.target.value) }));
-                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
-                                    }}>
-                                        {LEVELS.map((level) => (
-                                            <option key={level}>{level}</option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                                <Form.Group as={Col}>
-                                    <Form.Label>Ascension</Form.Label>
-                                    {/* To select ascension */}
-                                    <Form.Control as="select" defaultValue={char['ascension']} onChange={(event) => {
-                                        setChar(char => ({ ...char, level: Number(event.target.value) }));
-                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
-                                    }}>
-                                        {ASCENSIONS.map((ascension) => (
-                                            <option key={ascension}>{ascension}</option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                            </Form.Row>
-                            <Form.Group controlId="Weapon Selection">
-                                <Form.Label>Weapon</Form.Label>
-                                {/* To select weapon */}
-                                <Form.Control as="select" defaultValue={weap['name']} onChange={(event) => {
-                                    setWeap(weap => ({ ...weap, name: event.target.value }));
-                                    setStats(calcStats(flower, feather, hourglass, goblet, hat));
-                                }}>
-                                    {WEAPONS[char.type].map((char) => (
-                                        <option key={char}>{char}</option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
-                            <Form.Row>
-                                <Form.Group as={Col}>
-                                    <Form.Label>Level</Form.Label>
-                                    {/* To select level */}
-                                    <Form.Control as="select" defaultValue={weap['level']} onChange={(event) => {
-                                        setWeap(weap => ({ ...weap, level: Number(event.target.value) }));
-                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
-                                    }}>
-                                        {LEVELS.map((level) => (
-                                            <option key={level}>{level}</option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                                <Form.Group as={Col}>
-                                    <Form.Label>Ascension</Form.Label>
-                                    {/* To select ascension */}
-                                    <Form.Control as="select" defaultValue={weap['ascension']} onChange={(event) => {
-                                        setWeap(weap => ({ ...weap, level: Number(event.target.value) }));
-                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
-                                    }}>
-                                        {ASCENSIONS.map((ascension) => (
-                                            <option key={ascension}>{ascension}</option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                            </Form.Row>
-                        </Form>
+                        <Col>
+                            <Card> {/**Character */}
+                                <Form key="charChange">
+                                    <Form.Group controlId="Character Selection">
+                                        <Form.Label>Character</Form.Label>
+                                        {/* To select char */}
+                                        <Form.Control as="select" defaultValue={char['name']} onChange={(event) => {
+                                            setChar(char => ({ ...char, name: event.target.value }));
+                                            setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+                                        }}>
+                                            {CHARS.map((char) => (
+                                                <option key={char}>{char}</option>
+                                            ))}
+                                        </Form.Control>
+                                    </Form.Group>
+                                    <Form.Row>
+                                        <Form.Group as={Col}>
+                                            <Form.Label>Level</Form.Label>
+                                            {/* To select level */}
+                                            <Form.Control as="select" defaultValue={char['level']} onChange={(event) => {
+                                                setChar(char => ({ ...char, level: Number(event.target.value) }));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+                                            }}>
+                                                {LEVELS.map((level) => (
+                                                    <option key={level}>{level}</option>
+                                                ))}
+                                            </Form.Control>
+                                        </Form.Group>
+                                        <Form.Group as={Col}>
+                                            <Form.Label>Ascension</Form.Label>
+                                            {/* To select ascension */}
+                                            <Form.Control as="select" defaultValue={char['ascension']} onChange={(event) => {
+                                                setChar(char => ({ ...char, ascension: Number(event.target.value) }));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+                                            }}>
+                                                {ASCENSIONS.map((ascension) => (
+                                                    <option key={ascension}>{ascension}</option>
+                                                ))}
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Form.Row>
+                                </Form>
+                            </Card>
+                        </Col>
+                        <Col></Col>
+                        <Col>
+                            <Card> {/**Weapon */}
+                                <Form key="weapChange">
+                                    <Form.Group controlId="Weapon Selection">
+                                        <Form.Label>Weapon</Form.Label>
+                                        {/* To select weapon */}
+                                        <Form.Control as="select" defaultValue={weap['name']} onChange={(event) => {
+                                            setWeap(weap => ({ ...weap, name: event.target.value }));
+                                            setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+                                        }}>
+                                            {WEAPONS[CHARINFO[char.name]['WEAPON_TYPE']].map((char) => (
+                                                <option key={char}>{char}</option>
+                                            ))}
+                                        </Form.Control>
+                                    </Form.Group>
+                                    <Form.Row>
+                                        <Form.Group as={Col}>
+                                            <Form.Label>Level</Form.Label>
+                                            {/* To select level */}
+                                            <Form.Control as="select" defaultValue={weap['level']} onChange={(event) => {
+                                                setWeap(weap => ({ ...weap, level: Number(event.target.value) }));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+                                            }}>
+                                                {LEVELS.map((level) => (
+                                                    <option key={level}>{level}</option>
+                                                ))}
+                                            </Form.Control>
+                                        </Form.Group>
+                                        <Form.Group as={Col}>
+                                            <Form.Label>Ascension</Form.Label>
+                                            {/* To select ascension */}
+                                            <Form.Control as="select" defaultValue={weap['ascension']} onChange={(event) => {
+                                                setWeap(weap => ({ ...weap, ascension: Number(event.target.value) }));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+                                            }}>
+                                                {ASCENSIONS.map((ascension) => (
+                                                    <option key={ascension}>{ascension}</option>
+                                                ))}
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Form.Row>
+                                </Form>
+                            </Card>
+                        </Col>
                     </Row>
                     <br /><br /><br /><br />
-                    <Row>
-                        Skills
-                        -{char.name}
-                        -{char.level}
-                        -{char.ascension}
+                    <Row> {/**Skill damages */}
+                        {/**LMB=default, E=skill, Q=burst */}
+                        <Col>
+                            {skillDefault(char, skillLevels, stats)}
+                        </Col>
+                        <Col>
+                            {skillSkill(char, skillLevels, stats)}
+                        </Col>
+                        <Col>
+                            {skillBurst(char, skillLevels, stats)}
+                        </Col>
                     </Row>
                 </Col>
                 <Col>
@@ -599,7 +678,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as="select" defaultValue={flower['mainStat']} onChange={(event) => {
                                                 setFlower(flower => ({ ...flower, mainStat: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }}>
                                                 <option key={"HP_BASE"}>{"HP_BASE"}</option>{"HP_BASE"}
                                             </Form.Control>
@@ -607,7 +686,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setFlower(flower => ({ ...flower, mainVal: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }} />
                                         </Col>
                                     </Row>
@@ -620,7 +699,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={flower['sub1']} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, sub1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -630,7 +709,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, val1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -643,7 +722,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={flower['sub2']} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, sub2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -653,7 +732,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, val2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -668,7 +747,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={flower['sub3']} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, sub3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -678,7 +757,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, val3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -691,7 +770,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={flower['sub4']} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, sub4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -701,7 +780,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFlower(flower => ({ ...flower, val4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -721,7 +800,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as="select" defaultValue={feather['mainStat']} onChange={(event) => {
                                                 setFeather(feather => ({ ...feather, mainStat: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }}>
                                                 <option key={"ATK_BASE"}>{"ATK_BASE"}</option>{"ATK_BASE"}
                                             </Form.Control>
@@ -729,7 +808,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setFeather(feather => ({ ...feather, mainVal: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }} />
                                         </Col>
                                     </Row>
@@ -742,7 +821,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={feather['sub1']} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, sub1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -752,7 +831,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, val1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -765,7 +844,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={feather['sub2']} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, sub2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -775,7 +854,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, val2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -790,7 +869,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={feather['sub3']} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, sub3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -800,7 +879,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, val3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -813,7 +892,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={feather['sub4']} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, sub4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -823,7 +902,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setFeather(feather => ({ ...feather, val4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -843,7 +922,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as="select" defaultValue={hourglass['mainStat']} onChange={(event) => {
                                                 setHourglass(hourglass => ({ ...hourglass, mainStat: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }}>
                                                 {ART_MAIN_HOURGLASS.map((stat) => (
                                                     <option key={stat}>{stat}</option>
@@ -853,7 +932,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setHourglass(hourglass => ({ ...hourglass, mainVal: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }} />
                                         </Col>
                                     </Row>
@@ -866,7 +945,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={hourglass['sub1']} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, sub1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -876,7 +955,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, val1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -889,7 +968,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={hourglass['sub2']} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, sub2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -899,7 +978,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, val2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -914,7 +993,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={hourglass['sub3']} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, sub3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -924,7 +1003,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, val3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -937,7 +1016,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={hourglass['sub4']} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, sub4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -947,7 +1026,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHourglass(hourglass => ({ ...hourglass, val4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -967,7 +1046,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as="select" defaultValue={goblet['mainStat']} onChange={(event) => {
                                                 setGoblet(goblet => ({ ...goblet, mainStat: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }}>
                                                 {ART_MAIN_GOBLET.map((stat) => (
                                                     <option key={stat}>{stat}</option>
@@ -977,7 +1056,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setGoblet(goblet => ({ ...goblet, mainVal: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }} />
                                         </Col>
                                     </Row>
@@ -990,7 +1069,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={goblet['sub1']} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, sub1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -1000,7 +1079,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, val1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -1013,7 +1092,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={goblet['sub2']} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, sub2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -1023,7 +1102,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, val2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -1038,7 +1117,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={goblet['sub3']} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, sub3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -1048,7 +1127,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, val3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -1061,7 +1140,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={goblet['sub4']} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, sub4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -1071,7 +1150,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setGoblet(goblet => ({ ...goblet, val4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -1091,7 +1170,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as="select" defaultValue={hat['mainStat']} onChange={(event) => {
                                                 setHat(hat => ({ ...hat, mainStat: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }}>
                                                 {ART_MAIN_HAT.map((stat) => (
                                                     <option key={stat}>{stat}</option>
@@ -1101,7 +1180,7 @@ export function Calculator() {
                                         <Col>
                                             <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                 setHat(hat => ({ ...hat, mainVal: event.target.value }));
-                                                setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                             }} />
                                         </Col>
                                     </Row>
@@ -1114,7 +1193,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={hat['sub1']} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, sub1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -1124,7 +1203,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, val1: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -1137,7 +1216,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={hat['sub2']} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, sub2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -1147,7 +1226,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, val2: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -1162,7 +1241,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={hat['sub3']} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, sub3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -1172,7 +1251,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, val3: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
@@ -1185,7 +1264,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as="select" defaultValue={hat['sub4']} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, sub4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }}>
                                                         {ART_SUBSTATS.map((substat) => (
                                                             <option key={substat}>{substat}</option>
@@ -1195,7 +1274,7 @@ export function Calculator() {
                                                 <Col>
                                                     <Form.Control as='input' type="number" step="0.1" placeholder={0} onChange={(event) => {
                                                         setHat(hat => ({ ...hat, val4: event.target.value }));
-                                                        setStats(calcStats(flower, feather, hourglass, goblet, hat));
+                                                        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
                                                     }} />
                                                 </Col>
                                             </Row>
