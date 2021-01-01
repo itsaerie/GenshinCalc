@@ -28,8 +28,8 @@
       [531, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ],
-    "BONUS_STAT":"RECHARGE",
-    "RECHARGE":[0, 0, 8, 16, 16, 24, 0],
+    "BONUS_STAT":"ENERGY_RECHARGE",
+    "ENERGY_RECHARGE":[0, 0, 8, 16, 16, 24, 0],
     "Default":{
       "Name":"Ripple of Fate",
       "Normal":[

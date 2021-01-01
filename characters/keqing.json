@@ -1,6 +1,6 @@
 {
-    "Weapon":"SWORD",
-    "Element":"ELECTRO",
+    "WEAPON_TYPE":"SWORD",
+    "ELEMENT":"ELECTRO",
     "HP_BASE":[
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

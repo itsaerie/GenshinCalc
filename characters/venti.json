@@ -28,7 +28,8 @@
     [543, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ],
-  "RECHARGE":[0, 0, 8, 16, 16, 24, 32],
+  "BONUS_STAT":"ENERGY_RECHARGE",
+  "ENERGY_RECHARGE":[0, 0, 8, 16, 16, 24, 32],
   "Default":{
     "Name":"Divine Marksmanship",
     "Normal":[

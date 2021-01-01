@@ -28,6 +28,7 @@
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ],
+  "BONUS_STAT":"ATK_PERC",
   "ATK_PERC":[0, 0, 0, 0.12, 0.12, 0, 0],
   "Default":{
     "Name":"Sharpshooter",

@@ -19,9 +19,6 @@ const LEVELS = [
 const SKILLLEVELS = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
 ]
-const CHARS = [
-    "Amber", "Razor", "Ningguang"
-]
 const WEAPONS = {
     "BOW": ['Favonius Warbow'],
     "CATALYST": [],
@@ -30,4 +27,4 @@ const WEAPONS = {
     "SWORD": [],
 }
 
-export { ASCENSIONS, CHARS, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS }
+export { ASCENSIONS, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS }

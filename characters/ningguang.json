@@ -28,7 +28,8 @@
     [468, 0, 0, 0, 0, 0, 0, 0, 0, 508],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ],
-  "GEO_DMG":[0, 0, 6, 12, 12, 18, 0],
+  "BONUS_STAT":"GEO_BONUS",
+  "GEO_BONUS":[0, 0, 6, 12, 12, 18, 0],
   "Default":{
     "Name":"Sparkling Scatter",
     "Normal":[

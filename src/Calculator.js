@@ -7,9 +7,9 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
 // local imports
-import { CHARINFO } from './CharVals'
+import { CHARINFO, CHARLIST } from './CharVals'
 import { WEAPINFO } from './WeapVals'
-import { ASCENSIONS, CHARS, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
+import { ASCENSIONS, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
 import { STATS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT } from './StatVals';
 
 function Round(val) {
@@ -25,7 +25,7 @@ export function Calculator() {
     // basic char stuff
     const [char, setChar] = useState(
         {
-            name: CHARS[0],
+            name: CHARLIST[0],
             level: LEVELS[0],
             ascension: ASCENSIONS[0],
             constellation: CONSTELLATIONS[0]
@@ -709,7 +709,7 @@ export function Calculator() {
                                             setChar(char => ({ ...char, name: event.target.value }));
 
                                         }}>
-                                            {CHARS.map((char) => (
+                                            {CHARLIST.map((char) => (
                                                 <option key={char}>{char}</option>
                                             ))}
                                         </Form.Control>
