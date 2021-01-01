@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 // local imports
 import { CHARINFO, CHARLIST } from './CharVals'
 import { WEAPINFO } from './WeapVals'
-import { ASCENSIONS, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
+import { ASCENSIONS, ASC_LEVEL, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
 import { STATS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT } from './StatVals';
 
 function Round(val) {
@@ -169,9 +169,9 @@ export function Calculator() {
         // index 2 is level (char.level)
         calcLevel = weap.level
         if (weap.ascension < 2) {
-            calcLevel -= 1 + char.ascension * 19
+            calcLevel -= 1 + weap.ascension * 19
         } else {
-            calcLevel -= 20 + (char.ascension * 10)
+            calcLevel -= 20 + (weap.ascension * 10)
         }
         weapStats["ATK_BASE"] = WEAPINFO[weap.name]["ATK_BASE"][weap.ascension][calcLevel]
         weapStats[WEAPINFO[weap.name]["BONUS_STAT"]] = WEAPINFO[weap.name][WEAPINFO[weap.name]["BONUS_STAT"]][char.ascension]
@@ -219,7 +219,7 @@ export function Calculator() {
         statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['CRYO_BONUS'] / 100 + statDict['ATK_TOTAL']));
         statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['GEO_BONUS'] / 100 + statDict['ATK_TOTAL']));
         statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['PHYSICAL_BONUS'] / 100 + statDict['ATK_TOTAL']));
-
+        
         return statDict;
     }
 
@@ -722,7 +722,7 @@ export function Calculator() {
                                                 setChar(char => ({ ...char, level: Number(event.target.value) }));
 
                                             }}>
-                                                {LEVELS.map((level) => (
+                                                {ASC_LEVEL[char['ascension']].map((level) => (
                                                     <option key={level}>{level}</option>
                                                 ))}
                                             </Form.Control>
@@ -772,7 +772,7 @@ export function Calculator() {
                                                 setWeap(weap => ({ ...weap, level: Number(event.target.value) }));
 
                                             }}>
-                                                {LEVELS.map((level) => (
+                                                {ASC_LEVEL[weap['ascension']].map((level) => (
                                                     <option key={level}>{level}</option>
                                                 ))}
                                             </Form.Control>
