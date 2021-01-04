@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
+import Accordion from 'react-bootstrap/Accordion';
+import Alert from 'react-bootstrap/Alert';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 
 // local imports
 import { CHARINFO, CHARLIST } from './CharVals'
@@ -19,8 +23,6 @@ function Round(val) {
 // Container for all of the different things in the calculator
 export function Calculator() {
     // some base stuff
-    var text = "This tool is still under construction, please ignore the clutter. If you'd like to contribute, DM me on Discord: aerie#0017 LF: JSX and JSON writers"
-    var textTODO = "TODO: Ascension and Constellation Bonuses"
 
     // basic char stuff
     const [char, setChar] = useState(
@@ -137,6 +139,11 @@ export function Calculator() {
     const [stats, setStats] = useState(
         STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {}) // maps each stat to 0.0
     )
+    // set bonuses
+    const [sets, setSets] = useState(
+        {
+        }
+    )
 
     // a function which updates all of the stats given char, weap, and artifact input
     function calcStats(char, weap, flower, feather, hourglass, goblet, hat) {
@@ -219,7 +226,7 @@ export function Calculator() {
         statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['CRYO_BONUS'] / 100 + statDict['ATK_TOTAL']));
         statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['GEO_BONUS'] / 100 + statDict['ATK_TOTAL']));
         statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['PHYSICAL_BONUS'] / 100 + statDict['ATK_TOTAL']));
-        
+
         return statDict;
     }
 
@@ -382,9 +389,36 @@ export function Calculator() {
         )
     }
 
+    // Update sets and set bonuses from the artifacts
+    useEffect(() => {
+        setSets({ 'test': 0 })
+    }, [flower, feather, hourglass, goblet, hat])
+
+    // Update the stats from the artifacts
     useEffect(() => {
         setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
-    }, [char, weap, flower, feather, hourglass, goblet, hat]);
+    }, [char, weap, flower, feather, hourglass, goblet, hat, sets]);
+
+    // Updates on the Status of Genshin Calc
+    function WIPAlert() {
+        const [show, setShow] = useState(true);
+
+        if (show) {
+            return (
+                <Alert variant="primary" onClose={() => setShow(false)} dismissible>
+                    <Alert.Heading>Genshin Calculator</Alert.Heading>
+                    <p>
+                        This tool is still under construction, please ignore the clutter. If you'd like to contribute, DM me on Discord: aerie#0017 LF: JSX and JSON writers
+                    </p>
+                    <hr />
+                    <p>
+                        TODO: Ascension and Constellation Bonuses
+                    </p>
+                </Alert>
+            );
+        }
+        return null;
+    }
 
     // 3-column container:
     //  left = stats
@@ -392,8 +426,9 @@ export function Calculator() {
     //  right = artifact
     return (
         <Container fluid>
-            <Row>
-                <Col>
+            <WIPAlert />
+            <Tabs defaultActiveKey="selections">
+                <Tab eventKey="stats" title="Stats">
                     <Row> {/**Stats display */}
                         <Col sm={5}>
                             {/* PYRO */}
@@ -696,8 +731,8 @@ export function Calculator() {
                             </Card>
                         </Col>
                     </Row>
-                </Col>
-                <Col>
+                </Tab>
+                <Tab eventKey="selections" title="Character">
                     <Row> {/**Dropdown menus for char and weapon selection */}
                         <Col>
                             <Card> {/**Character */}
@@ -742,12 +777,6 @@ export function Calculator() {
                                     </Form.Row>
                                 </Form>
                             </Card>
-                        </Col>
-                        <Col>
-                            {text}
-                            <br />
-                            <br />
-                            {textTODO}
                         </Col>
                         <Col>
                             <Card> {/**Weapon */}
@@ -807,626 +836,633 @@ export function Calculator() {
                             {skillBurst(char, skillLevels, stats)}
                         </Col>
                     </Row>
-                </Col>
-                <Col>
-                    <Row> {/**Artifact Display: Flower */}
+                </Tab>
+                <Tab eventKey="artifacts" title="Artifacts">
+                    <Accordion>
+                        {/**Artifact Display: Flower */}
                         <Card>
-                            Flower
-                            <Form key="Flower">
-                                <Form.Group>
-                                    <Form.Label>Main Stat</Form.Label>
+                            <Accordion.Toggle as={Card.Header} eventKey="Flower">
+                                Flower
+                            </Accordion.Toggle>
+                            <Accordion.Collapse eventKey="Flower">
+                                <Form key="Flower">
+                                    <Form.Group>
+                                        <Form.Label>Main Stat</Form.Label>
+                                        <Row>
+                                            <Col>
+                                                <Form.Control as="select" defaultValue={flower['mainStat']} controlid="MainFlowerStat" onChange={(event) => {
+                                                    setFlower(flower => ({ ...flower, mainStat: event.target.value }));
+                                                }}>
+                                                    <option key={"HP_BASE"}>{"HP_BASE"}</option>{"HP_BASE"}
+                                                </Form.Control>
+                                            </Col>
+                                            <Col>
+                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainFlowerVal" onChange={(event) => {
+                                                    setFlower(flower => ({ ...flower, mainVal: event.target.value }));
+                                                }} />
+                                            </Col>
+                                        </Row>
+                                    </Form.Group>
                                     <Row>
                                         <Col>
-                                            <Form.Control as="select" defaultValue={flower['mainStat']} controlid="MainFlowerStat" onChange={(event) => {
-                                                setFlower(flower => ({ ...flower, mainStat: event.target.value }));
-
-                                            }}>
-                                                <option key={"HP_BASE"}>{"HP_BASE"}</option>{"HP_BASE"}
-                                            </Form.Control>
+                                            <Form.Group>
+                                                <Form.Label>Substat 1</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={flower['sub1']} controlid="Val1FlowerStat" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, sub1: event.target.value }));
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Val1FlowerVal" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, val1: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainFlowerVal" onChange={(event) => {
-                                                setFlower(flower => ({ ...flower, mainVal: event.target.value }));
-
-                                            }} />
+                                            <Form.Group>
+                                                <Form.Label>Substat 2</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={flower['sub2']} controlid="Val2FlowerStat" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, sub2: event.target.value }));
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Val2FlowerVal" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, val2: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                     </Row>
-                                </Form.Group>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 1</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={flower['sub1']} controlid="Val1FlowerStat" onChange={(event) => {
-                                                        setFlower(flower => ({ ...flower, sub1: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Val1FlowerVal" onChange={(event) => {
-                                                        setFlower(flower => ({ ...flower, val1: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 2</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={flower['sub2']} controlid="Val2FlowerStat" onChange={(event) => {
-                                                        setFlower(flower => ({ ...flower, sub2: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Val2FlowerVal" onChange={(event) => {
-                                                        setFlower(flower => ({ ...flower, val2: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 3</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={flower['sub3']} controlid="Val3FlowerStat" onChange={(event) => {
-                                                        setFlower(flower => ({ ...flower, sub3: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Val3FlowerVal" onChange={(event) => {
-                                                        setFlower(flower => ({ ...flower, val3: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 4</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={flower['sub4']} controlid="Val4FlowerStat" onChange={(event) => {
-                                                        setFlower(flower => ({ ...flower, sub4: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Val4FlowerVal" onChange={(event) => {
-                                                        setFlower(flower => ({ ...flower, val4: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                            </Form>
-                        </Card>
-                    </Row>
-                    <Row> {/**Artifact Display: Feather */}
-                        <Card>
-                            Feather
-                            <Form key="Feather">
-                                <Form.Group>
-                                    <Form.Label>Main Stat</Form.Label>
                                     <Row>
                                         <Col>
-                                            <Form.Control as="select" defaultValue={feather['mainStat']} controlid="MainFeatherStat" onChange={(event) => {
-                                                setFeather(feather => ({ ...feather, mainStat: event.target.value }));
-
-                                            }}>
-                                                <option key={"ATK_BASE"}>{"ATK_BASE"}</option>{"ATK_BASE"}
-                                            </Form.Control>
+                                            <Form.Group>
+                                                <Form.Label>Substat 3</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={flower['sub3']} controlid="Val3FlowerStat" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, sub3: event.target.value }));
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Val3FlowerVal" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, val3: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainFeatherVal" onChange={(event) => {
-                                                setFeather(feather => ({ ...feather, mainVal: event.target.value }));
-
-                                            }} />
+                                            <Form.Group>
+                                                <Form.Label>Substat 4</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={flower['sub4']} controlid="Val4FlowerStat" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, sub4: event.target.value }));
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Val4FlowerVal" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, val4: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                     </Row>
-                                </Form.Group>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 1</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={feather['sub1']} controlid="Sub1FeatherStat" onChange={(event) => {
-                                                        setFeather(feather => ({ ...feather, sub1: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub1FeatherVal" onChange={(event) => {
-                                                        setFeather(feather => ({ ...feather, val1: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 2</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={feather['sub2']} controlid="Sub2FeatherStat" onChange={(event) => {
-                                                        setFeather(feather => ({ ...feather, sub2: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub2FeatherVal" onChange={(event) => {
-                                                        setFeather(feather => ({ ...feather, val2: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 3</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={feather['sub3']} controlid="Sub3FeatherStat" onChange={(event) => {
-                                                        setFeather(feather => ({ ...feather, sub3: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub3FeatherVal" onChange={(event) => {
-                                                        setFeather(feather => ({ ...feather, val3: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 4</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={feather['sub4']} controlid="Sub4FeatherStat" onChange={(event) => {
-                                                        setFeather(feather => ({ ...feather, sub4: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub4FeatherVal" onChange={(event) => {
-                                                        setFeather(feather => ({ ...feather, val4: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                            </Form>
+                                </Form>
+                            </Accordion.Collapse>
                         </Card>
-                    </Row>
-                    <Row> {/**Artifact Display: Hourglass */}
+                        {/**Artifact Display: Feather */}
                         <Card>
-                            Hourglass
-                            <Form key="Hourglass">
-                                <Form.Group>
-                                    <Form.Label>Main Stat</Form.Label>
+                            <Accordion.Toggle as={Card.Header} eventKey="Feather">
+                                Feather
+                            </Accordion.Toggle>
+                            <Accordion.Collapse eventKey="Feather">
+                                <Form key="Feather">
+                                    <Form.Group>
+                                        <Form.Label>Main Stat</Form.Label>
+                                        <Row>
+                                            <Col>
+                                                <Form.Control as="select" defaultValue={feather['mainStat']} controlid="MainFeatherStat" onChange={(event) => {
+                                                    setFeather(feather => ({ ...feather, mainStat: event.target.value }));
+
+                                                }}>
+                                                    <option key={"ATK_BASE"}>{"ATK_BASE"}</option>{"ATK_BASE"}
+                                                </Form.Control>
+                                            </Col>
+                                            <Col>
+                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainFeatherVal" onChange={(event) => {
+                                                    setFeather(feather => ({ ...feather, mainVal: event.target.value }));
+
+                                                }} />
+                                            </Col>
+                                        </Row>
+                                    </Form.Group>
                                     <Row>
                                         <Col>
-                                            <Form.Control as="select" defaultValue={hourglass['mainStat']} controlid="MainHourglassStat" onChange={(event) => {
-                                                setHourglass(hourglass => ({ ...hourglass, mainStat: event.target.value }));
+                                            <Form.Group>
+                                                <Form.Label>Substat 1</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={feather['sub1']} controlid="Sub1FeatherStat" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, sub1: event.target.value }));
 
-                                            }}>
-                                                {ART_MAIN_HOURGLASS.map((stat) => (
-                                                    <option key={stat}>{stat}</option>
-                                                ))}
-                                            </Form.Control>
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub1FeatherVal" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, val1: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainHourglassVal" onChange={(event) => {
-                                                setHourglass(hourglass => ({ ...hourglass, mainVal: event.target.value }));
+                                            <Form.Group>
+                                                <Form.Label>Substat 2</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={feather['sub2']} controlid="Sub2FeatherStat" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, sub2: event.target.value }));
 
-                                            }} />
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub2FeatherVal" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, val2: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                     </Row>
-                                </Form.Group>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 1</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={hourglass['sub1']} controlid="Sub1HourglassStat" onChange={(event) => {
-                                                        setHourglass(hourglass => ({ ...hourglass, sub1: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub1HourglassVal" onChange={(event) => {
-                                                        setHourglass(hourglass => ({ ...hourglass, val1: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 2</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={hourglass['sub2']} controlid="Sub2HourglassStat" onChange={(event) => {
-                                                        setHourglass(hourglass => ({ ...hourglass, sub2: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub2HourglassVal" onChange={(event) => {
-                                                        setHourglass(hourglass => ({ ...hourglass, val2: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 3</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={hourglass['sub3']} controlid="Sub3HourglassStat" onChange={(event) => {
-                                                        setHourglass(hourglass => ({ ...hourglass, sub3: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub3HourglassVal" onChange={(event) => {
-                                                        setHourglass(hourglass => ({ ...hourglass, val3: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 4</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={hourglass['sub4']} controlid="Sub4HourglassStat" onChange={(event) => {
-                                                        setHourglass(hourglass => ({ ...hourglass, sub4: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub4HourglassVal" onChange={(event) => {
-                                                        setHourglass(hourglass => ({ ...hourglass, val4: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                            </Form>
-                        </Card>
-                    </Row>
-                    <Row> {/**Artifact Display: Goblet */}
-                        <Card>
-                            Goblet
-                            <Form key="Goblet">
-                                <Form.Group>
-                                    <Form.Label>Main Stat</Form.Label>
                                     <Row>
                                         <Col>
-                                            <Form.Control as="select" defaultValue={goblet['mainStat']} controlid="MainGobletStat" onChange={(event) => {
-                                                setGoblet(goblet => ({ ...goblet, mainStat: event.target.value }));
+                                            <Form.Group>
+                                                <Form.Label>Substat 3</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={feather['sub3']} controlid="Sub3FeatherStat" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, sub3: event.target.value }));
 
-                                            }}>
-                                                {ART_MAIN_GOBLET.map((stat) => (
-                                                    <option key={stat}>{stat}</option>
-                                                ))}
-                                            </Form.Control>
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub3FeatherVal" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, val3: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainGobletVal" onChange={(event) => {
-                                                setGoblet(goblet => ({ ...goblet, mainVal: event.target.value }));
+                                            <Form.Group>
+                                                <Form.Label>Substat 4</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={feather['sub4']} controlid="Sub4FeatherStat" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, sub4: event.target.value }));
 
-                                            }} />
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub4FeatherVal" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, val4: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                     </Row>
-                                </Form.Group>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 1</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={goblet['sub1']} controlid="Sub1GobletStat" onChange={(event) => {
-                                                        setGoblet(goblet => ({ ...goblet, sub1: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub1GobletVal" onChange={(event) => {
-                                                        setGoblet(goblet => ({ ...goblet, val1: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 2</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={goblet['sub2']} controlid="Sub2GobletStat" onChange={(event) => {
-                                                        setGoblet(goblet => ({ ...goblet, sub2: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub2GobletVal" onChange={(event) => {
-                                                        setGoblet(goblet => ({ ...goblet, val2: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 3</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={goblet['sub3']} controlid="Sub3GobletStat" onChange={(event) => {
-                                                        setGoblet(goblet => ({ ...goblet, sub3: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub3GobletVal" onChange={(event) => {
-                                                        setGoblet(goblet => ({ ...goblet, val3: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 4</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={goblet['sub4']} controlid="Sub4GobletStat" onChange={(event) => {
-                                                        setGoblet(goblet => ({ ...goblet, sub4: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub4GobletVal" onChange={(event) => {
-                                                        setGoblet(goblet => ({ ...goblet, val4: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                            </Form>
+                                </Form>
+                            </Accordion.Collapse>
                         </Card>
-                    </Row>
-                    <Row> {/**Artifact Display: Hat */}
+                        {/**Artifact Display: Hourglass */}
                         <Card>
-                            Hat
-                            <Form key="Hat">
-                                <Form.Group controlid="MainStat Hat">
-                                    <Form.Label>Main Stat</Form.Label>
+                            <Accordion.Toggle as={Card.Header} eventKey="Hourglass">
+                                Hourglass
+                            </Accordion.Toggle>
+                            <Accordion.Collapse eventKey="Hourglass">
+                                <Form key="Hourglass">
+                                    <Form.Group>
+                                        <Form.Label>Main Stat</Form.Label>
+                                        <Row>
+                                            <Col>
+                                                <Form.Control as="select" defaultValue={hourglass['mainStat']} controlid="MainHourglassStat" onChange={(event) => {
+                                                    setHourglass(hourglass => ({ ...hourglass, mainStat: event.target.value }));
+
+                                                }}>
+                                                    {ART_MAIN_HOURGLASS.map((stat) => (
+                                                        <option key={stat}>{stat}</option>
+                                                    ))}
+                                                </Form.Control>
+                                            </Col>
+                                            <Col>
+                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainHourglassVal" onChange={(event) => {
+                                                    setHourglass(hourglass => ({ ...hourglass, mainVal: event.target.value }));
+
+                                                }} />
+                                            </Col>
+                                        </Row>
+                                    </Form.Group>
                                     <Row>
                                         <Col>
-                                            <Form.Control as="select" defaultValue={hat['mainStat']} controlid="MainHatStat" onChange={(event) => {
-                                                setHat(hat => ({ ...hat, mainStat: event.target.value }));
+                                            <Form.Group>
+                                                <Form.Label>Substat 1</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hourglass['sub1']} controlid="Sub1HourglassStat" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, sub1: event.target.value }));
 
-                                            }}>
-                                                {ART_MAIN_HAT.map((stat) => (
-                                                    <option key={stat}>{stat}</option>
-                                                ))}
-                                            </Form.Control>
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub1HourglassVal" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, val1: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                         <Col>
-                                            <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainHatVal" onChange={(event) => {
-                                                setHat(hat => ({ ...hat, mainVal: event.target.value }));
+                                            <Form.Group>
+                                                <Form.Label>Substat 2</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hourglass['sub2']} controlid="Sub2HourglassStat" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, sub2: event.target.value }));
 
-                                            }} />
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub2HourglassVal" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, val2: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
                                         </Col>
                                     </Row>
-                                </Form.Group>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 1</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={hat['sub1']} controlid="Sub1HatStat" onChange={(event) => {
-                                                        setHat(hat => ({ ...hat, sub1: event.target.value }));
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 3</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hourglass['sub3']} controlid="Sub3HourglassStat" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, sub3: event.target.value }));
 
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub1HatVal" onChange={(event) => {
-                                                        setHat(hat => ({ ...hat, val1: event.target.value }));
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub3HourglassVal" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, val3: event.target.value }));
 
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 2</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={hat['sub2']} controlid="Sub2HatStat" onChange={(event) => {
-                                                        setHat(hat => ({ ...hat, sub2: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 4</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hourglass['sub4']} controlid="Sub4HourglassStat" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, sub4: event.target.value }));
 
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub2HatVal" onChange={(event) => {
-                                                        setHat(hat => ({ ...hat, val2: event.target.value }));
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub4HourglassVal" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, val4: event.target.value }));
 
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 3</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={hat['sub3']} controlid="Sub3HatStat" onChange={(event) => {
-                                                        setHat(hat => ({ ...hat, sub3: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub3HatVal" onChange={(event) => {
-                                                        setHat(hat => ({ ...hat, val3: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col>
-                                        <Form.Group>
-                                            <Form.Label>Substat 4</Form.Label>
-                                            <Row>
-                                                <Col>
-                                                    <Form.Control as="select" defaultValue={hat['sub4']} controlid="Sub4HatStat" onChange={(event) => {
-                                                        setHat(hat => ({ ...hat, sub4: event.target.value }));
-
-                                                    }}>
-                                                        {ART_SUBSTATS.map((substat) => (
-                                                            <option key={substat}>{substat}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Col>
-                                                <Col>
-                                                    <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub4HatVal" onChange={(event) => {
-                                                        setHat(hat => ({ ...hat, val4: event.target.value }));
-
-                                                    }} />
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                            </Form>
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                </Form>
+                            </Accordion.Collapse>
                         </Card>
-                    </Row>
-                </Col>
-            </Row>
+                        {/**Artifact Display: Goblet */}
+                        <Card>
+                            <Accordion.Toggle as={Card.Header} eventKey="Goblet">
+                                Goblet
+                            </Accordion.Toggle>
+                            <Accordion.Collapse eventKey="Goblet">
+                                <Form key="Goblet">
+                                    <Form.Group>
+                                        <Form.Label>Main Stat</Form.Label>
+                                        <Row>
+                                            <Col>
+                                                <Form.Control as="select" defaultValue={goblet['mainStat']} controlid="MainGobletStat" onChange={(event) => {
+                                                    setGoblet(goblet => ({ ...goblet, mainStat: event.target.value }));
+
+                                                }}>
+                                                    {ART_MAIN_GOBLET.map((stat) => (
+                                                        <option key={stat}>{stat}</option>
+                                                    ))}
+                                                </Form.Control>
+                                            </Col>
+                                            <Col>
+                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainGobletVal" onChange={(event) => {
+                                                    setGoblet(goblet => ({ ...goblet, mainVal: event.target.value }));
+
+                                                }} />
+                                            </Col>
+                                        </Row>
+                                    </Form.Group>
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 1</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={goblet['sub1']} controlid="Sub1GobletStat" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, sub1: event.target.value }));
+
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub1GobletVal" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, val1: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 2</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={goblet['sub2']} controlid="Sub2GobletStat" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, sub2: event.target.value }));
+
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub2GobletVal" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, val2: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 3</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={goblet['sub3']} controlid="Sub3GobletStat" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, sub3: event.target.value }));
+
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub3GobletVal" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, val3: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 4</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={goblet['sub4']} controlid="Sub4GobletStat" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, sub4: event.target.value }));
+
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub4GobletVal" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, val4: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                </Form>
+                            </Accordion.Collapse>
+                        </Card>
+                        {/**Artifact Display: Hat */}
+                        <Card>
+                            <Accordion.Toggle as={Card.Header} eventKey="Hat">
+                                Hat
+                            </Accordion.Toggle>
+                            <Accordion.Collapse eventKey="Hat">
+                                <Form key="Hat">
+                                    <Form.Group controlid="MainStat Hat">
+                                        <Form.Label>Main Stat</Form.Label>
+                                        <Row>
+                                            <Col>
+                                                <Form.Control as="select" defaultValue={hat['mainStat']} controlid="MainHatStat" onChange={(event) => {
+                                                    setHat(hat => ({ ...hat, mainStat: event.target.value }));
+
+                                                }}>
+                                                    {ART_MAIN_HAT.map((stat) => (
+                                                        <option key={stat}>{stat}</option>
+                                                    ))}
+                                                </Form.Control>
+                                            </Col>
+                                            <Col>
+                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainHatVal" onChange={(event) => {
+                                                    setHat(hat => ({ ...hat, mainVal: event.target.value }));
+
+                                                }} />
+                                            </Col>
+                                        </Row>
+                                    </Form.Group>
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 1</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hat['sub1']} controlid="Sub1HatStat" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, sub1: event.target.value }));
+
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub1HatVal" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, val1: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 2</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hat['sub2']} controlid="Sub2HatStat" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, sub2: event.target.value }));
+
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub2HatVal" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, val2: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 3</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hat['sub3']} controlid="Sub3HatStat" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, sub3: event.target.value }));
+
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub3HatVal" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, val3: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Substat 4</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hat['sub4']} controlid="Sub4HatStat" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, sub4: event.target.value }));
+
+                                                        }}>
+                                                            {ART_SUBSTATS.map((substat) => (
+                                                                <option key={substat}>{substat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="Sub4HatVal" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, val4: event.target.value }));
+
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                </Form>
+                            </Accordion.Collapse>
+                        </Card>
+                    </Accordion>
+                </Tab>
+            </Tabs>
         </Container>
     )
 };
