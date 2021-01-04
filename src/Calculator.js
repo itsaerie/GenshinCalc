@@ -448,7 +448,7 @@ export function Calculator() {
                     </p>
                     <hr />
                     <p>
-                        TODO: Ascension and Constellation Bonuses
+                        TODO: Set bonuses (artifacts), then Ascension and Constellation Bonuses, then Special Weapon Text
                     </p>
                 </Alert>
             );

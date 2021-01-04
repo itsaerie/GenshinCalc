@@ -49,9 +49,9 @@ const ARTIFACT_SETS = {
     'Ocean Conqueror':{}
 }
 const ART_SUBSTATS = [
-    'HP_BASE', 'HP_PERC',
-    'ATK_BASE', 'ATK_PERC',
-    'DEF_BASE', 'DEF_PERC',
+    'HP_BONUS', 'HP_PERC',
+    'ATK_BONUS', 'ATK_PERC',
+    'DEF_BONUS', 'DEF_PERC',
     'ELEMENTAL_MASTERY',
     'CRIT_RATE', 'CRIT_DAMAGE',
     'ENERGY_RECHARGE'
