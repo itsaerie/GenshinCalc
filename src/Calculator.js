@@ -12,10 +12,11 @@ import Tabs from 'react-bootstrap/Tabs';
 import ToggleButton from 'react-bootstrap/ToggleButton'
 
 // local imports
+import { ARTIFACT_SETS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT } from './ArtVals'
 import { CHARINFO, CHARLIST } from './CharVals'
 import { WEAPINFO } from './WeapVals'
 import { ASCENSIONS, ASC_LEVEL, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
-import { ARTIFACT_SETS, STATS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT } from './StatVals';
+import { STATS } from './StatVals';
 
 function Round(val) {
     return Number(val.toFixed(2));

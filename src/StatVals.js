@@ -18,72 +18,7 @@ const STATS = [
     'CRYO_DAMAGE', 'CRYO_BONUS', 'CRYO_RESISTANCE',
     'GEO_DAMAGE', 'GEO_BONUS', 'GEO_RESISTANCE',
     'PHYSICAL_DAMAGE', 'PHYSICAL_BONUS', 'PHYSICAL_RESISTANCE',
-]
-const ARTIFACT_SETS = {
-    'Adventurer':{},
-    'Lucky Dog':{},
-    'Traveling Doctor':{},
-    'Instructor':{},
-    'Berserker':{},
-    'The Exilt':{},
-    'Resolution of Sojourner':{},
-    'Martial Artist':{},
-    'Defender\'s Will':{},
-    'Tiny Miracle':{},
-    'Brave Heart':{},
-    'Gambler':{},
-    'Scholar':{},
-    'Gladiator\'s Finale':{},
-    'Wanderer\'s Troupe':{},
-    'Viridescent Venerer':{},
-    'Thundering Fury':{},
-    'Thundersoother':{},
-    'Crimson Witch of Flames':{},
-    'Lavawalker':{},
-    'Archaic Petra':{},
-    'Retracing Bolide':{},
-    'Maiden Beloved':{},
-    'Noblesse Oblige':{},
-    'Bloodstained Chivalry':{},
-    'Icebreaker':{},
-    'Ocean Conqueror':{}
-}
-const ART_SUBSTATS = [
-    'HP_BONUS', 'HP_PERC',
-    'ATK_BONUS', 'ATK_PERC',
-    'DEF_BONUS', 'DEF_PERC',
-    'ELEMENTAL_MASTERY',
-    'CRIT_RATE', 'CRIT_DAMAGE',
-    'ENERGY_RECHARGE'
-]
-const ART_MAIN_HOURGLASS = [
-    'HP_PERC',
-    'DEF_PERC',
-    'ATK_PERC',
-    'ELEMENTAL_MASTERY',
-    'ENERGY_RECHARGE'
-]
-const ART_MAIN_GOBLET = [
-    'HP_PERC',
-    'DEF_PERC',
-    'ATK_PERC',
-    'ELEMENTAL_MASTERY',
-    'PYRO_BONUS',
-    'HYDRO_BONUS',
-    'DENDRO_BONUS',
-    'ELECTRO_BONUS',
-    'ANEMO_BONUS',
-    'CRYO_BONUS',
-    'GEO_BONUS',
-    'PHYSICAL_BONUS',
-]
-const ART_MAIN_HAT = [
-    'HP_PERC',
-    'DEF_PERC',
-    'ATK_PERC',
-    'ELEMENTAL_MASTERY',
-    'CRIT_RATE', 'CRIT_DAMAGE',
-    'HEAL_BONUS'
+    'EXTRA_TEXT'
 ]
 
-export { STATS, ARTIFACT_SETS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT }
+export { STATS }
