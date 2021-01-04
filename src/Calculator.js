@@ -13,7 +13,7 @@ import Tabs from 'react-bootstrap/Tabs';
 // local imports
 import { CHARINFO, CHARLIST } from './CharVals'
 import { WEAPINFO } from './WeapVals'
-import { ASCENSIONS, ASC_LEVEL, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
+import { ARTIFACT_SETS, ASCENSIONS, ASC_LEVEL, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
 import { STATS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT } from './StatVals';
 
 function Round(val) {
@@ -22,8 +22,8 @@ function Round(val) {
 
 // Container for all of the different things in the calculator
 export function Calculator() {
-    // some base stuff
-
+    // enable crits in calculations?
+    const [crit, setCrit] = useState(true)
     // basic char stuff
     const [char, setChar] = useState(
         {
@@ -145,8 +145,23 @@ export function Calculator() {
         }
     )
 
+    // a function which updates sets given the different artifacts sets
+    function calcSet(flower, feather, hourglass, goblet, hat) {
+        let setDict = {}
+        let artArray = [flower, feather, hourglass, goblet, hat];
+        artArray.map((artifact) => {
+            let setName = artifact['set']
+            if(Object.keys(setDict).includes(setName)) {
+                setDict[setName] += 1
+            } else {
+                setDict[setName] = 1
+            }
+            return null
+        })
+        return setDict;
+    }
     // a function which updates all of the stats given char, weap, and artifact input
-    function calcStats(char, weap, flower, feather, hourglass, goblet, hat) {
+    function calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets) {
         let statDict = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
 
         // load char stats
@@ -159,6 +174,7 @@ export function Calculator() {
         } else {
             calcLevel -= 20 + (char.ascension * 10)
         }
+        // TODO add bonuses from ascension and constellation
         charStats["HP_BASE"] = CHARINFO[char.name]["HP_BASE"][char.ascension][calcLevel]
         charStats["ATK_BASE"] = CHARINFO[char.name]["ATK_BASE"][char.ascension][calcLevel]
         charStats["DEF_BASE"] = CHARINFO[char.name]["DEF_BASE"][char.ascension][calcLevel]
@@ -170,7 +186,7 @@ export function Calculator() {
             return null
         })
 
-        // TODO load weapon stats
+        // load weapon stats
         let weapStats = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
         // index 1 is ascension (char.ascension)
         // index 2 is level (char.level)
@@ -180,6 +196,7 @@ export function Calculator() {
         } else {
             calcLevel -= 20 + (weap.ascension * 10)
         }
+        // TODO add bonuses from ascension
         weapStats["ATK_BASE"] = WEAPINFO[weap.name]["ATK_BASE"][weap.ascension][calcLevel]
         weapStats[WEAPINFO[weap.name]["BONUS_STAT"]] = WEAPINFO[weap.name][WEAPINFO[weap.name]["BONUS_STAT"]][char.ascension]
         // try to map it to statDict
@@ -212,6 +229,8 @@ export function Calculator() {
             statDict[stat] = Round(statDict[stat])
             return null
         })
+
+        // TODO set bonuses
 
         // calculate the 'total' values now
         statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * statDict['HP_PERC']) / 100 + statDict['HP_BASE']));
@@ -391,12 +410,11 @@ export function Calculator() {
 
     // Update sets and set bonuses from the artifacts
     useEffect(() => {
-        setSets({ 'test': 0 })
+        setSets(calcSet(flower, feather, hourglass, goblet, hat))
     }, [flower, feather, hourglass, goblet, hat])
-
     // Update the stats from the artifacts
     useEffect(() => {
-        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat));
+        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets));
     }, [char, weap, flower, feather, hourglass, goblet, hat, sets]);
 
     // Updates on the Status of Genshin Calc
@@ -774,6 +792,18 @@ export function Calculator() {
                                                 ))}
                                             </Form.Control>
                                         </Form.Group>
+                                        <Form.Group as={Col}>
+                                            <Form.Label>Constellation</Form.Label>
+                                            {/* To select constellation */}
+                                            <Form.Control as="select" defaultValue={char['constellation']} onChange={(event) => {
+                                                setChar(char => ({ ...char, constellation: Number(event.target.value) }));
+
+                                            }}>
+                                                {CONSTELLATIONS.map((constellation) => (
+                                                    <option key={constellation}>{constellation}</option>
+                                                ))}
+                                            </Form.Control>
+                                        </Form.Group>
                                     </Form.Row>
                                 </Form>
                             </Card>
@@ -824,6 +854,9 @@ export function Calculator() {
                         </Col>
                     </Row>
                     <br /><br /><br /><br />
+                    <Row> {/**Toggles */}
+
+                    </Row>
                     <Row> {/**Skill damages */}
                         {/**LMB=default, E=skill, Q=burst */}
                         <Col>
@@ -846,23 +879,39 @@ export function Calculator() {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey="Flower">
                                 <Form key="Flower">
-                                    <Form.Group>
-                                        <Form.Label>Main Stat</Form.Label>
-                                        <Row>
-                                            <Col>
-                                                <Form.Control as="select" defaultValue={flower['mainStat']} controlid="MainFlowerStat" onChange={(event) => {
-                                                    setFlower(flower => ({ ...flower, mainStat: event.target.value }));
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Main Stat</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={flower['mainStat']} controlid="MainFlowerStat" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, mainStat: event.target.value }));
+                                                        }}>
+                                                            <option key={"HP_BASE"}>{"HP_BASE"}</option>{"HP_BASE"}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainFlowerVal" onChange={(event) => {
+                                                            setFlower(flower => ({ ...flower, mainVal: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Set</Form.Label>
+                                                <Form.Control as="select" defaultValue={flower['set']} controlid="FlowerSet" onChange={(event) => {
+                                                    setFlower(flower => ({ ...flower, set: event.target.value }));
                                                 }}>
-                                                    <option key={"HP_BASE"}>{"HP_BASE"}</option>{"HP_BASE"}
+                                                    {Object.keys(ARTIFACT_SETS).map((setname) => (
+                                                        <option key={setname}>{setname}</option>
+                                                    ))}
                                                 </Form.Control>
-                                            </Col>
-                                            <Col>
-                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainFlowerVal" onChange={(event) => {
-                                                    setFlower(flower => ({ ...flower, mainVal: event.target.value }));
-                                                }} />
-                                            </Col>
-                                        </Row>
-                                    </Form.Group>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
                                     <Row>
                                         <Col>
                                             <Form.Group>
@@ -961,25 +1010,39 @@ export function Calculator() {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey="Feather">
                                 <Form key="Feather">
-                                    <Form.Group>
-                                        <Form.Label>Main Stat</Form.Label>
-                                        <Row>
-                                            <Col>
-                                                <Form.Control as="select" defaultValue={feather['mainStat']} controlid="MainFeatherStat" onChange={(event) => {
-                                                    setFeather(feather => ({ ...feather, mainStat: event.target.value }));
-
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Main Stat</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={feather['mainStat']} controlid="MainFeatherStat" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, mainStat: event.target.value }));
+                                                        }}>
+                                                            <option key={"ATK_BASE"}>{"ATK_BASE"}</option>{"ATK_BASE"}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainFeatherVal" onChange={(event) => {
+                                                            setFeather(feather => ({ ...feather, mainVal: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Set</Form.Label>
+                                                <Form.Control as="select" defaultValue={feather['set']} controlid="FeatherSet" onChange={(event) => {
+                                                    setFeather(feather => ({ ...feather, set: event.target.value }));
                                                 }}>
-                                                    <option key={"ATK_BASE"}>{"ATK_BASE"}</option>{"ATK_BASE"}
+                                                    {Object.keys(ARTIFACT_SETS).map((setname) => (
+                                                        <option key={setname}>{setname}</option>
+                                                    ))}
                                                 </Form.Control>
-                                            </Col>
-                                            <Col>
-                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainFeatherVal" onChange={(event) => {
-                                                    setFeather(feather => ({ ...feather, mainVal: event.target.value }));
-
-                                                }} />
-                                            </Col>
-                                        </Row>
-                                    </Form.Group>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
                                     <Row>
                                         <Col>
                                             <Form.Group>
@@ -1086,27 +1149,41 @@ export function Calculator() {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey="Hourglass">
                                 <Form key="Hourglass">
-                                    <Form.Group>
-                                        <Form.Label>Main Stat</Form.Label>
-                                        <Row>
-                                            <Col>
-                                                <Form.Control as="select" defaultValue={hourglass['mainStat']} controlid="MainHourglassStat" onChange={(event) => {
-                                                    setHourglass(hourglass => ({ ...hourglass, mainStat: event.target.value }));
-
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Main Stat</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hourglass['mainStat']} controlid="MainHourglassStat" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, mainStat: event.target.value }));
+                                                        }}>
+                                                            {ART_MAIN_HOURGLASS.map((stat) => (
+                                                                <option key={stat}>{stat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainHourglassVal" onChange={(event) => {
+                                                            setHourglass(hourglass => ({ ...hourglass, mainVal: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Set</Form.Label>
+                                                <Form.Control as="select" defaultValue={hourglass['set']} controlid="HourglassSet" onChange={(event) => {
+                                                    setHourglass(hourglass => ({ ...hourglass, set: event.target.value }));
                                                 }}>
-                                                    {ART_MAIN_HOURGLASS.map((stat) => (
-                                                        <option key={stat}>{stat}</option>
+                                                    {Object.keys(ARTIFACT_SETS).map((setname) => (
+                                                        <option key={setname}>{setname}</option>
                                                     ))}
                                                 </Form.Control>
-                                            </Col>
-                                            <Col>
-                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainHourglassVal" onChange={(event) => {
-                                                    setHourglass(hourglass => ({ ...hourglass, mainVal: event.target.value }));
-
-                                                }} />
-                                            </Col>
-                                        </Row>
-                                    </Form.Group>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
                                     <Row>
                                         <Col>
                                             <Form.Group>
@@ -1213,27 +1290,41 @@ export function Calculator() {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey="Goblet">
                                 <Form key="Goblet">
-                                    <Form.Group>
-                                        <Form.Label>Main Stat</Form.Label>
-                                        <Row>
-                                            <Col>
-                                                <Form.Control as="select" defaultValue={goblet['mainStat']} controlid="MainGobletStat" onChange={(event) => {
-                                                    setGoblet(goblet => ({ ...goblet, mainStat: event.target.value }));
-
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Main Stat</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={goblet['mainStat']} controlid="MainGobletStat" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, mainStat: event.target.value }));
+                                                        }}>
+                                                            {ART_MAIN_GOBLET.map((stat) => (
+                                                                <option key={stat}>{stat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainGobletVal" onChange={(event) => {
+                                                            setGoblet(goblet => ({ ...goblet, mainVal: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Set</Form.Label>
+                                                <Form.Control as="select" defaultValue={goblet['set']} controlid="GobletSet" onChange={(event) => {
+                                                    setGoblet(goblet => ({ ...goblet, set: event.target.value }));
                                                 }}>
-                                                    {ART_MAIN_GOBLET.map((stat) => (
-                                                        <option key={stat}>{stat}</option>
+                                                    {Object.keys(ARTIFACT_SETS).map((setname) => (
+                                                        <option key={setname}>{setname}</option>
                                                     ))}
                                                 </Form.Control>
-                                            </Col>
-                                            <Col>
-                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainGobletVal" onChange={(event) => {
-                                                    setGoblet(goblet => ({ ...goblet, mainVal: event.target.value }));
-
-                                                }} />
-                                            </Col>
-                                        </Row>
-                                    </Form.Group>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
                                     <Row>
                                         <Col>
                                             <Form.Group>
@@ -1340,27 +1431,41 @@ export function Calculator() {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey="Hat">
                                 <Form key="Hat">
-                                    <Form.Group controlid="MainStat Hat">
-                                        <Form.Label>Main Stat</Form.Label>
-                                        <Row>
-                                            <Col>
-                                                <Form.Control as="select" defaultValue={hat['mainStat']} controlid="MainHatStat" onChange={(event) => {
-                                                    setHat(hat => ({ ...hat, mainStat: event.target.value }));
-
+                                    <Row>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Main Stat</Form.Label>
+                                                <Row>
+                                                    <Col>
+                                                        <Form.Control as="select" defaultValue={hat['mainStat']} controlid="MainHatStat" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, mainStat: event.target.value }));
+                                                        }}>
+                                                            {ART_MAIN_HAT.map((stat) => (
+                                                                <option key={stat}>{stat}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Col>
+                                                    <Col>
+                                                        <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainHatVal" onChange={(event) => {
+                                                            setHat(hat => ({ ...hat, mainVal: event.target.value }));
+                                                        }} />
+                                                    </Col>
+                                                </Row>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group>
+                                                <Form.Label>Set</Form.Label>
+                                                <Form.Control as="select" defaultValue={hat['set']} controlid="HatSet" onChange={(event) => {
+                                                    setHat(hat => ({ ...hat, set: event.target.value }));
                                                 }}>
-                                                    {ART_MAIN_HAT.map((stat) => (
-                                                        <option key={stat}>{stat}</option>
+                                                    {Object.keys(ARTIFACT_SETS).map((setname) => (
+                                                        <option key={setname}>{setname}</option>
                                                     ))}
                                                 </Form.Control>
-                                            </Col>
-                                            <Col>
-                                                <Form.Control as='input' type="number" step="0.1" placeholder={0} controlid="MainHatVal" onChange={(event) => {
-                                                    setHat(hat => ({ ...hat, mainVal: event.target.value }));
-
-                                                }} />
-                                            </Col>
-                                        </Row>
-                                    </Form.Group>
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
                                     <Row>
                                         <Col>
                                             <Form.Group>
@@ -1463,7 +1568,7 @@ export function Calculator() {
                     </Accordion>
                 </Tab>
             </Tabs>
-        </Container>
+        </Container >
     )
 };
 
