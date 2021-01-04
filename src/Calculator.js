@@ -9,12 +9,13 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import ToggleButton from 'react-bootstrap/ToggleButton'
 
 // local imports
 import { CHARINFO, CHARLIST } from './CharVals'
 import { WEAPINFO } from './WeapVals'
-import { ARTIFACT_SETS, ASCENSIONS, ASC_LEVEL, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
-import { STATS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT } from './StatVals';
+import { ASCENSIONS, ASC_LEVEL, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS } from './GenVals'
+import { ARTIFACT_SETS, STATS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT } from './StatVals';
 
 function Round(val) {
     return Number(val.toFixed(2));
@@ -151,7 +152,7 @@ export function Calculator() {
         let artArray = [flower, feather, hourglass, goblet, hat];
         artArray.map((artifact) => {
             let setName = artifact['set']
-            if(Object.keys(setDict).includes(setName)) {
+            if (Object.keys(setDict).includes(setName)) {
                 setDict[setName] += 1
             } else {
                 setDict[setName] = 1
@@ -161,7 +162,7 @@ export function Calculator() {
         return setDict;
     }
     // a function which updates all of the stats given char, weap, and artifact input
-    function calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets) {
+    function calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets, crit) {
         let statDict = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
 
         // load char stats
@@ -232,19 +233,36 @@ export function Calculator() {
 
         // TODO set bonuses
 
-        // calculate the 'total' values now
-        statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * statDict['HP_PERC']) / 100 + statDict['HP_BASE']));
-        statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * statDict['ATK_PERC']) / 100 + statDict['ATK_BASE']));
-        statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * statDict['DEF_PERC']) / 100 + statDict['DEF_BASE']));
-        // and damages for elements
-        statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['PYRO_BONUS'] / 100 + statDict['ATK_TOTAL']));
-        statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['HYDRO_BONUS'] / 100 + statDict['ATK_TOTAL']));
-        statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['DENDRO_BONUS'] / 100 + statDict['ATK_TOTAL']));
-        statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['ELECTRO_BONUS'] / 100 + statDict['ATK_TOTAL']));
-        statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['ANEMO_BONUS'] / 100 + statDict['ATK_TOTAL']));
-        statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['CRYO_BONUS'] / 100 + statDict['ATK_TOTAL']));
-        statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['GEO_BONUS'] / 100 + statDict['ATK_TOTAL']));
-        statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * statDict['PHYSICAL_BONUS'] / 100 + statDict['ATK_TOTAL']));
+        // if we crit
+        if (crit) {
+            // calculate the 'total' values now
+            statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC'])) / 100 + statDict['HP_BONUS']));
+            statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) / 100 + statDict['ATK_BASE']));
+            statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC'])) / 100 + statDict['DEF_BASE']));
+            // and damages for elements
+            statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
+            statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
+            statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['DENDRO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
+            statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ELECTRO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
+            statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ANEMO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
+            statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['CRYO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
+            statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
+            statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
+        } else {
+            // calculate the 'total' values now
+            statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC'])) / 100 + statDict['HP_BONUS']));
+            statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) / 100 + statDict['ATK_BASE']));
+            statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC'])) / 100 + statDict['DEF_BASE']));
+            // and damages for elements
+            statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'])));
+            statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'])));
+            statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['DENDRO_BONUS'])));
+            statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ELECTRO_BONUS'])));
+            statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ANEMO_BONUS'])));
+            statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['CRYO_BONUS'])));
+            statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS'])));
+            statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS'])));
+        }
 
         return statDict;
     }
@@ -414,8 +432,8 @@ export function Calculator() {
     }, [flower, feather, hourglass, goblet, hat])
     // Update the stats from the artifacts
     useEffect(() => {
-        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets));
-    }, [char, weap, flower, feather, hourglass, goblet, hat, sets]);
+        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets, crit));
+    }, [char, weap, flower, feather, hourglass, goblet, hat, sets, crit]);
 
     // Updates on the Status of Genshin Calc
     function WIPAlert() {
@@ -853,10 +871,11 @@ export function Calculator() {
                             </Card>
                         </Col>
                     </Row>
-                    <br /><br /><br /><br />
+                    <br /><br />
                     <Row> {/**Toggles */}
-
+                        <ToggleButton type="checkbox" checked={crit} onClick={(e) => setCrit(e.currentTarget.checked)}> Add crit to calculations?</ToggleButton>
                     </Row>
+                    <br /><br />
                     <Row> {/**Skill damages */}
                         {/**LMB=default, E=skill, Q=burst */}
                         <Col>
@@ -888,7 +907,7 @@ export function Calculator() {
                                                         <Form.Control as="select" defaultValue={flower['mainStat']} controlid="MainFlowerStat" onChange={(event) => {
                                                             setFlower(flower => ({ ...flower, mainStat: event.target.value }));
                                                         }}>
-                                                            <option key={"HP_BASE"}>{"HP_BASE"}</option>{"HP_BASE"}
+                                                            <option key={"HP_BONUS"}>{"HP_BONUS"}</option>{"HP_BONUS"}
                                                         </Form.Control>
                                                     </Col>
                                                     <Col>
@@ -1019,7 +1038,7 @@ export function Calculator() {
                                                         <Form.Control as="select" defaultValue={feather['mainStat']} controlid="MainFeatherStat" onChange={(event) => {
                                                             setFeather(feather => ({ ...feather, mainStat: event.target.value }));
                                                         }}>
-                                                            <option key={"ATK_BASE"}>{"ATK_BASE"}</option>{"ATK_BASE"}
+                                                            <option key={"ATK_BONUS"}>{"ATK_BONUS"}</option>{"ATK_BONUS"}
                                                         </Form.Control>
                                                     </Col>
                                                     <Col>

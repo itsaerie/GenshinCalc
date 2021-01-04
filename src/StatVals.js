@@ -1,8 +1,8 @@
 const STATS = [
     '', // this is a filler for blank and unused stats
-    'HP_BASE', 'HP_PERC', 'HP_TOTAL',
-    'ATK_BASE', 'ATK_PERC', 'ATK_TOTAL',
-    'DEF_BASE', 'DEF_PERC', 'DEF_TOTAL',
+    'HP_BASE', 'HP_BONUS', 'HP_PERC', 'HP_TOTAL',
+    'ATK_BASE', 'ATK_BONUS', 'ATK_PERC', 'ATK_TOTAL',
+    'DEF_BASE', 'DEF_BONUS', 'DEF_PERC', 'DEF_TOTAL',
     'ELEMENTAL_MASTERY',
     'STAMINA', // this shit is useless
     'CRIT_RATE', 'CRIT_DAMAGE',
@@ -19,6 +19,35 @@ const STATS = [
     'GEO_DAMAGE', 'GEO_BONUS', 'GEO_RESISTANCE',
     'PHYSICAL_DAMAGE', 'PHYSICAL_BONUS', 'PHYSICAL_RESISTANCE',
 ]
+const ARTIFACT_SETS = {
+    'Adventurer':{},
+    'Lucky Dog':{},
+    'Traveling Doctor':{},
+    'Instructor':{},
+    'Berserker':{},
+    'The Exilt':{},
+    'Resolution of Sojourner':{},
+    'Martial Artist':{},
+    'Defender\'s Will':{},
+    'Tiny Miracle':{},
+    'Brave Heart':{},
+    'Gambler':{},
+    'Scholar':{},
+    'Gladiator\'s Finale':{},
+    'Wanderer\'s Troupe':{},
+    'Viridescent Venerer':{},
+    'Thundering Fury':{},
+    'Thundersoother':{},
+    'Crimson Witch of Flames':{},
+    'Lavawalker':{},
+    'Archaic Petra':{},
+    'Retracing Bolide':{},
+    'Maiden Beloved':{},
+    'Noblesse Oblige':{},
+    'Bloodstained Chivalry':{},
+    'Icebreaker':{},
+    'Ocean Conqueror':{}
+}
 const ART_SUBSTATS = [
     'HP_BASE', 'HP_PERC',
     'ATK_BASE', 'ATK_PERC',
@@ -57,4 +86,4 @@ const ART_MAIN_HAT = [
     'HEAL_BONUS'
 ]
 
-export { STATS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT }
+export { STATS, ARTIFACT_SETS, ART_SUBSTATS, ART_MAIN_HOURGLASS, ART_MAIN_GOBLET, ART_MAIN_HAT }

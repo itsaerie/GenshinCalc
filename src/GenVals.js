@@ -1,33 +1,3 @@
-const ARTIFACT_SETS = {
-    'Adventurer':{
-    },
-    'Lucky Dog':{},
-    'Traveling Doctor':{},
-    'Instructor':{},
-    'Berserker':{},
-    'The Exilt':{},
-    'Resolution of Sojourner':{},
-    'Martial Artist':{},
-    'Defender\'s Will':{},
-    'Tiny Miracle':{},
-    'Brave Heart':{},
-    'Gambler':{},
-    'Scholar':{},
-    'Gladiator\'s Finale':{},
-    'Wanderer\'s Troupe':{},
-    'Viridescent Venerer':{},
-    'Thundering Fury':{},
-    'Thundersoother':{},
-    'Crimson Witch of Flames':{},
-    'Lavawalker':{},
-    'Archaic Petra':{},
-    'Retracing Bolide':{},
-    'Maiden Beloved':{},
-    'Noblesse Oblige':{},
-    'Bloodstained Chivalry':{},
-    'Icebreaker':{},
-    'Ocean Conqueror':{}
-}
 const ASCENSIONS = [
     0, 1, 2, 3, 4, 5, 6
 ]
@@ -66,4 +36,4 @@ const WEAPONS = {
     "SWORD": [],
 }
 
-export { ARTIFACT_SETS, ASCENSIONS, ASC_LEVEL, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS }
+export { ASCENSIONS, ASC_LEVEL, CONSTELLATIONS, LEVELS, SKILLLEVELS, WEAPONS }
