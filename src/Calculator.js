@@ -273,12 +273,12 @@ export function Calculator() {
             return null
         }))
 
+        // calculate the 'total' values now
+        statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC'])) + statDict['HP_BONUS']));
+        statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) + statDict['ATK_BONUS']));
+        statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC'])) + statDict['DEF_BONUS']));
         // if we crit
         if (toggles['crit'][1]) {
-            // calculate the 'total' values now
-            statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC'])) / 100 + statDict['HP_BONUS']));
-            statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) / 100 + statDict['ATK_BASE']));
-            statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC'])) / 100 + statDict['DEF_BASE']));
             // and damages for elements
             statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
             statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
@@ -289,10 +289,6 @@ export function Calculator() {
             statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
             statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
         } else {
-            // calculate the 'total' values now
-            statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC'])) / 100 + statDict['HP_BONUS']));
-            statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) / 100 + statDict['ATK_BASE']));
-            statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC'])) / 100 + statDict['DEF_BASE']));
             // and damages for elements
             statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'])));
             statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'])));
@@ -670,11 +666,14 @@ export function Calculator() {
         Object.keys(toggles).map((toggleName) => {
             let toggleArray = toggles[toggleName]
             list.push(<ToggleButton type="checkbox" checked={toggleArray[1]} key={toggleName} onClick={
-                (event) => setToggles(toggles => ({ ...toggles, crit: [toggleArray[0], !toggleArray[1]] }))
+                (event) => {
+                    let newMap = {}
+                    newMap[toggleName] = [toggleArray[0], !toggleArray[1]]
+                    setToggles(toggles => ({ ...toggles, ...newMap }))
+                }
             }>{toggleArray[0]}</ToggleButton>)
             return null
         })
-        console.log(toggles)
 
         return (
             <Col sm={2}>
