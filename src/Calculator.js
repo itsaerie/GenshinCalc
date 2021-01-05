@@ -241,33 +241,36 @@ export function Calculator() {
         })
 
         // iterate through sets
-        let bonuses = []
+        let allBonuses = []
         Object.keys(sets).map((setName) => {
             if (setName === '') {
                 return null
             }
             // 4-piece bonus
             if (sets[setName] >= 4) {
-                bonuses.push([ARTIFACT_SETS[setName][4]])
+                allBonuses.push([ARTIFACT_SETS[setName][4]])
             }
             // 2-piece bonus
             if (sets[setName] >= 2) {
-                bonuses.push([ARTIFACT_SETS[setName][2]])
+                allBonuses.push([ARTIFACT_SETS[setName][2]])
             }
             return null
         })
         // add each bonus
-        bonuses.map(((bonus) => {
-            Object.keys(bonus[0]).map((stat) => {
-                switch (stat) {
-                    case 'EXTRA_TEXT':
-                        statDict[stat].push(bonus[0][stat])
-                        break;
-                    case '':
-                        break;
-                    default:
-                        statDict[stat] += bonus[0][stat]
-                }
+        allBonuses.map(((bonuses) => {
+            bonuses.map((bonus) => {
+                Object.keys(bonus).map((stat) => {
+                    switch (stat) {
+                        case 'EXTRA_TEXT':
+                            statDict[stat].push(bonus[stat])
+                            break;
+                        case '':
+                            break;
+                        default:
+                            statDict[stat] += bonus[stat]
+                    }
+                    return null
+                })
                 return null
             })
             return null
