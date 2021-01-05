@@ -165,6 +165,7 @@ export function Calculator() {
     // a function which updates all of the stats given char, weap, and artifact input
     function calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets, crit) {
         let statDict = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
+        statDict['EXTRA_TEXT'] = []
 
         // load char stats
         let charStats = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
@@ -183,6 +184,7 @@ export function Calculator() {
         charStats[CHARINFO[char.name]["BONUS_STAT"]] = CHARINFO[char.name][CHARINFO[char.name]["BONUS_STAT"]][char.ascension]
         // try to map it to statDict
         Object.keys(charStats).map((stat) => {
+            if (stat === 'EXTRA_TEXT') { return null }
             statDict[stat] += charStats[stat]
             statDict[stat] = Round(statDict[stat])
             return null
@@ -203,6 +205,7 @@ export function Calculator() {
         weapStats[WEAPINFO[weap.name]["BONUS_STAT"]] = WEAPINFO[weap.name][WEAPINFO[weap.name]["BONUS_STAT"]][char.ascension]
         // try to map it to statDict
         Object.keys(weapStats).map((stat) => {
+            if (stat === 'EXTRA_TEXT') { return null }
             statDict[stat] += weapStats[stat]
             statDict[stat] = Round(statDict[stat])
             return null
@@ -227,12 +230,44 @@ export function Calculator() {
         })
         // try to map it to statDict
         Object.keys(artStats).map((stat) => {
+            if (stat === 'EXTRA_TEXT') { return null }
             statDict[stat] += artStats[stat]
             statDict[stat] = Round(statDict[stat])
             return null
         })
 
-        // TODO set bonuses
+        // iterate through sets
+        let bonuses = []
+        Object.keys(sets).map((setName) => {
+            if (setName === '') {
+                return null
+            }
+            // 4-piece bonus
+            if (sets[setName] >= 4) {
+                bonuses.push([ARTIFACT_SETS[setName][4]])
+            }
+            // 2-piece bonus
+            if (sets[setName] >= 2) {
+                bonuses.push([ARTIFACT_SETS[setName][2]])
+            }
+            return null
+        })
+        // add each bonus
+        bonuses.map(((bonus) => {
+            Object.keys(bonus[0]).map((stat) => {
+                switch (stat) {
+                    case 'EXTRA_TEXT':
+                        statDict[stat].push(bonus[0][stat])
+                        break;
+                    case '':
+                        break;
+                    default:
+                        statDict[stat] += bonus[0][stat]
+                }
+                return null
+            })
+            return null
+        }))
 
         // if we crit
         if (crit) {
@@ -241,14 +276,14 @@ export function Calculator() {
             statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) / 100 + statDict['ATK_BASE']));
             statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC'])) / 100 + statDict['DEF_BASE']));
             // and damages for elements
-            statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
-            statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
-            statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['DENDRO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
-            statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ELECTRO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
-            statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ANEMO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
-            statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['CRYO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
-            statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
-            statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS'])) * (1 + (statDict['CRIT_RATE']*statDict['CRIT_DAMAGE']*.01*.01)));
+            statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['DENDRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ELECTRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ANEMO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['CRYO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
         } else {
             // calculate the 'total' values now
             statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC'])) / 100 + statDict['HP_BONUS']));
@@ -427,6 +462,203 @@ export function Calculator() {
         )
     }
 
+    // function which returns a display of a character's elemtnal damage
+    function CharElemDMG() {
+        let disp = []
+        // show specific element
+        switch (CHARINFO[char['name']]['ELEMENT']) {
+            case "PYRO":
+                disp.push(
+                    <Card bg="danger" text="light" key="elem">
+                        <Row><Col></Col><Col>PYRO</Col><Col></Col></Row>
+                        <Row>
+                            <Col>Damage</Col>
+                            <Col>%</Col>
+                            <Col>Res</Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["PYRO_DAMAGE"]}
+                            </Col>
+                            <Col>
+                                {stats["PYRO_BONUS"]}
+                            </Col>
+                            <Col>
+                                {stats["PYRO_RESISTANCE"]}
+                            </Col>
+                        </Row>
+                    </Card>
+                )
+                break;
+            case "HYDRO":
+                disp.push(
+                    <Card bg="primary" text="light" key="elem">
+                        <Row><Col></Col><Col>HYDRO</Col><Col></Col></Row>
+                        <Row>
+                            <Col>Damage</Col>
+                            <Col>%</Col>
+                            <Col>Res</Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["HYDRO_DAMAGE"]}
+                            </Col>
+                            <Col>
+                                {stats["HYDRO_BONUS"]}
+                            </Col>
+                            <Col>
+                                {stats["HYDRO_RESISTANCE"]}
+                            </Col>
+                        </Row>
+                    </Card>
+                )
+                break;
+            case "DENDRO":
+                disp.push(
+                    <Card bg="success" text="light" key="elem">
+                        <Row><Col></Col><Col>DENDRO</Col><Col></Col></Row>
+                        <Row>
+                            <Col>Damage</Col>
+                            <Col>%</Col>
+                            <Col>Res</Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["DENDRO_DAMAGE"]}
+                            </Col>
+                            <Col>
+                                {stats["DENDRO_BONUS"]}
+                            </Col>
+                            <Col>
+                                {stats["DENDRO_RESISTANCE"]}
+                            </Col>
+                        </Row>
+                    </Card>
+                )
+                break;
+            case "ELECTRO":
+                disp.push(
+                    <Card bg="warning" text="black" key="elem">
+                        <Row><Col></Col><Col>ELECTRO</Col><Col></Col></Row>
+                        <Row>
+                            <Col>Damage</Col>
+                            <Col>%</Col>
+                            <Col>Res</Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["ELECTRO_DAMAGE"]}
+                            </Col>
+                            <Col>
+                                {stats["ELECTRO_BONUS"]}
+                            </Col>
+                            <Col>
+                                {stats["ELECTRO_RESISTANCE"]}
+                            </Col>
+                        </Row>
+                    </Card>
+                )
+                break;
+            case "ANEMO":
+                disp.push(
+                    <Card bg="success" text="light" key="elem">
+                        <Row><Col></Col><Col>ANEMO</Col><Col></Col></Row>
+                        <Row>
+                            <Col>Damage</Col>
+                            <Col>%</Col>
+                            <Col>Res</Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["ANEMO_DAMAGE"]}
+                            </Col>
+                            <Col>
+                                {stats["ANEMO_BONUS"]}
+                            </Col>
+                            <Col>
+                                {stats["ANEMO_RESISTANCE"]}
+                            </Col>
+                        </Row>
+                    </Card>
+                )
+                break;
+            case "CRYO":
+                disp.push(
+                    <Card bg="info" text="light" key="elem">
+                        <Row><Col></Col><Col>CRYO</Col><Col></Col></Row>
+                        <Row>
+                            <Col>Damage</Col>
+                            <Col>%</Col>
+                            <Col>Res</Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["CRYO_DAMAGE"]}
+                            </Col>
+                            <Col>
+                                {stats["CRYO_BONUS"]}
+                            </Col>
+                            <Col>
+                                {stats["CRYO_RESISTANCE"]}
+                            </Col>
+                        </Row>
+                    </Card>
+                )
+                break;
+            case "GEO":
+                disp.push(
+                    <Card bg="dark" text="light" key="elem">
+                        <Row><Col></Col><Col>GEO</Col><Col></Col></Row>
+                        <Row>
+                            <Col>Damage</Col>
+                            <Col>%</Col>
+                            <Col>Res</Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["GEO_DAMAGE"]}
+                            </Col>
+                            <Col>
+                                {stats["GEO_BONUS"]}
+                            </Col>
+                            <Col>
+                                {stats["GEO_RESISTANCE"]}
+                            </Col>
+                        </Row>
+                    </Card>
+                )
+                break;
+            default:
+        }
+        // if it's a tome, don't add the physical damage
+        if (CHARINFO[char['name']]['WEAPON_TYPE'] !== 'CATALYST') {
+            disp.push(<br key="brOpt" />)
+            disp.push(
+                <Card bg="white" text="black" key="phys">
+                    <Row><Col></Col><Col>PHYSICAL</Col><Col></Col></Row>
+                    <Row>
+                        <Col>Damage</Col>
+                        <Col>%</Col>
+                        <Col>Res</Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            {stats["PHYSICAL_DAMAGE"]}
+                        </Col>
+                        <Col>
+                            {stats["PHYSICAL_BONUS"]}
+                        </Col>
+                        <Col>
+                            {stats["PHYSICAL_RESISTANCE"]}
+                        </Col>
+                    </Row>
+                </Card>
+            )
+        }
+        disp.push(<br key="br" />)
+        return disp
+    }
+
     // Update sets and set bonuses from the artifacts
     useEffect(() => {
         setSets(calcSet(flower, feather, hourglass, goblet, hat))
@@ -466,308 +698,143 @@ export function Calculator() {
             <WIPAlert />
             <Tabs defaultActiveKey="selections">
                 <Tab eventKey="stats" title="Stats">
-                    <Row> {/**Stats display */}
-                        <Col sm={5}>
-                            {/* PYRO */}
-                            <Card bg="danger" text="light">
-                                <Row><Col></Col><Col>PYRO</Col><Col></Col></Row>
-                                <Row>
-                                    <Col>Damage</Col>
-                                    <Col>%</Col>
-                                    <Col>Res</Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["PYRO_DAMAGE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["PYRO_BONUS"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["PYRO_RESISTANCE"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* HYDRO */}
-                            <Card bg="primary" text="light">
-                                <Row><Col></Col><Col>HYDRO</Col><Col></Col></Row>
-                                <Row>
-                                    <Col>Damage</Col>
-                                    <Col>%</Col>
-                                    <Col>Res</Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["HYDRO_DAMAGE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["HYDRO_BONUS"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["HYDRO_RESISTANCE"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* DENDRO */}
-                            <Card bg="success" text="light">
-                                <Row><Col></Col><Col>DENDRO</Col><Col></Col></Row>
-                                <Row>
-                                    <Col>Damage</Col>
-                                    <Col>%</Col>
-                                    <Col>Res</Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["DENDRO_DAMAGE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["DENDRO_BONUS"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["DENDRO_RESISTANCE"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* ELECTRO */}
-                            <Card bg="warning" text="black">
-                                <Row><Col></Col><Col>ELECTRO</Col><Col></Col></Row>
-                                <Row>
-                                    <Col>Damage</Col>
-                                    <Col>%</Col>
-                                    <Col>Res</Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["ELECTRO_DAMAGE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["ELECTRO_BONUS"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["ELECTRO_RESISTANCE"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* ANEMO */}
-                            <Card bg="success" text="light">
-                                <Row><Col></Col><Col>ANEMO</Col><Col></Col></Row>
-                                <Row>
-                                    <Col>Damage</Col>
-                                    <Col>%</Col>
-                                    <Col>Res</Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["ANEMO_DAMAGE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["ANEMO_BONUS"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["ANEMO_RESISTANCE"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* CRYO */}
-                            <Card bg="info" text="light">
-                                <Row><Col></Col><Col>CRYO</Col><Col></Col></Row>
-                                <Row>
-                                    <Col>Damage</Col>
-                                    <Col>%</Col>
-                                    <Col>Res</Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["CRYO_DAMAGE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["CRYO_BONUS"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["CRYO_RESISTANCE"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* GEO */}
-                            <Card bg="dark" text="light">
-                                <Row><Col></Col><Col>GEO</Col><Col></Col></Row>
-                                <Row>
-                                    <Col>Damage</Col>
-                                    <Col>%</Col>
-                                    <Col>Res</Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["GEO_DAMAGE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["GEO_BONUS"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["GEO_RESISTANCE"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* PHYSICAL */}
-                            <Card bg="white" text="black">
-                                <Row><Col></Col><Col>PHYSICAL</Col><Col></Col></Row>
-                                <Row>
-                                    <Col>Damage</Col>
-                                    <Col>%</Col>
-                                    <Col>Res</Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["PHYSICAL_DAMAGE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["PHYSICAL_BONUS"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["PHYSICAL_RESISTANCE"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-                        <Col>
-                            {/* HP */}
-                            <Card bg="dark" text="light">
-                                <Row>
-                                    <Col>
-                                        Base HP
+                    {/* HP */}
+                    <Card bg="dark" text="light">
+                        <Row>
+                            <Col>
+                                Base HP
                             </Col>
-                                    <Col>
-                                        HP%
+                            <Col>
+                                HP%
                             </Col>
-                                    <Col>
-                                        Total HP
+                            <Col>
+                                Total HP
                             </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["HP_BASE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["HP_PERC"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["HP_TOTAL"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* ATK */}
-                            <Card bg="dark" text="light">
-                                <Row>
-                                    <Col>
-                                        Base ATK
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["HP_BASE"]}
                             </Col>
-                                    <Col>
-                                        ATK%
+                            <Col>
+                                {stats["HP_PERC"]}
                             </Col>
-                                    <Col>
-                                        Total ATK
+                            <Col>
+                                {stats["HP_TOTAL"]}
                             </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["ATK_BASE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["ATK_PERC"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["ATK_TOTAL"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* DEF */}
-                            <Card bg="dark" text="light">
-                                <Row>
-                                    <Col>
-                                        Base DEF
+                        </Row>
+                    </Card>
+                    <br />
+                    {/* ATK */}
+                    <Card bg="dark" text="light">
+                        <Row>
+                            <Col>
+                                Base ATK
                             </Col>
-                                    <Col>
-                                        DEF%
+                            <Col>
+                                ATK%
                             </Col>
-                                    <Col>
-                                        Total DEF
+                            <Col>
+                                Total ATK
                             </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["DEF_BASE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["DEF_PERC"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["DEF_TOTAL"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <br />
-                            {/* Random shit */}
-                            <Card bg="dark" text="light">
-                                <Row>
-                                    <Col>
-                                        Elemental Mastery
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["ATK_BASE"]}
                             </Col>
-                                    <Col>
-                                        Energy Recharge
+                            <Col>
+                                {stats["ATK_PERC"]}
                             </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["ELEMENTAL_MASTERY"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["ENERGY_RECHARGE"]}
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        Crit Rate
+                            <Col>
+                                {stats["ATK_TOTAL"]}
                             </Col>
-                                    <Col>
-                                        Crit Damage
+                        </Row>
+                    </Card>
+                    <br />
+                    <CharElemDMG />
+                    {/* DEF */}
+                    <Card bg="dark" text="light">
+                        <Row>
+                            <Col>
+                                Base DEF
                             </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["CRIT_RATE"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["CRIT_DAMAGE"]}
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        Healing Bonus
+                            <Col>
+                                DEF%
                             </Col>
-                                    <Col>
-                                        Healing Received
+                            <Col>
+                                Total DEF
                             </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        {stats["HEAL_BONUS"]}
-                                    </Col>
-                                    <Col>
-                                        {stats["HEAL_RECEIVED"]}
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-                    </Row>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["DEF_BASE"]}
+                            </Col>
+                            <Col>
+                                {stats["DEF_PERC"]}
+                            </Col>
+                            <Col>
+                                {stats["DEF_TOTAL"]}
+                            </Col>
+                        </Row>
+                    </Card>
+                    <br />
+                    {/* Random shit */}
+                    <Card bg="dark" text="light">
+                        <Row>
+                            <Col>
+                                Elemental Mastery
+                            </Col>
+                            <Col>
+                                Energy Recharge
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["ELEMENTAL_MASTERY"]}
+                            </Col>
+                            <Col>
+                                {stats["ENERGY_RECHARGE"]}
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                Crit Rate
+                            </Col>
+                            <Col>
+                                Crit Damage
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["CRIT_RATE"]}
+                            </Col>
+                            <Col>
+                                {stats["CRIT_DAMAGE"]}
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                Healing Bonus
+                            </Col>
+                            <Col>
+                                Healing Received
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {stats["HEAL_BONUS"]}
+                            </Col>
+                            <Col>
+                                {stats["HEAL_RECEIVED"]}
+                            </Col>
+                        </Row>
+                    </Card>
+                    <br />
+                    {/* Extra texts */}
+                    <Card bg="dark" text="light">
+                        Extra Effects:
+                        <br />
+                        {stats['EXTRA_TEXT']}
+                    </Card>
                 </Tab>
                 <Tab eventKey="selections" title="Character">
                     <Row> {/**Dropdown menus for char and weapon selection */}
