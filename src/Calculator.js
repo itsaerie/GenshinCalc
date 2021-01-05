@@ -940,11 +940,11 @@ export function Calculator() {
                         </Col>
                     </Row>
                     <br /><br />
-                    <Row> {/**Toggles */}
-                        <ToggleButton type="checkbox" checked={crit} onClick={(e) => setCrit(e.currentTarget.checked)}> Add crit to calculations?</ToggleButton>
-                    </Row>
-                    <br /><br />
-                    <Row> {/**Skill damages */}
+                    <Row> {/**Skills and toggles */}
+                        {/**Toggles */}
+                        <Col sm={2}>
+                            <ToggleButton type="checkbox" checked={crit} onClick={(e) => setCrit(e.currentTarget.checked)}> Add crit to calculations?</ToggleButton>
+                        </Col>
                         {/**LMB=default, E=skill, Q=burst */}
                         <Col>
                             {skillDefault(char, skillLevels, stats)}
