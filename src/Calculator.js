@@ -24,8 +24,6 @@ function Round(val) {
 
 // Container for all of the different things in the calculator
 export function Calculator() {
-    // enable crits in calculations?
-    const [crit, setCrit] = useState(true)
     // basic char stuff
     const [char, setChar] = useState(
         {
@@ -146,6 +144,12 @@ export function Calculator() {
         {
         }
     )
+    // toggleables
+    const [toggles, setToggles] = useState(
+        {
+            'crit': [' Add crit to calculations?', false]
+        }
+    )
 
     // a function which updates sets given the different artifacts sets
     function calcSet(flower, feather, hourglass, goblet, hat) {
@@ -163,7 +167,7 @@ export function Calculator() {
         return setDict;
     }
     // a function which updates all of the stats given char, weap, and artifact input
-    function calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets, crit) {
+    function calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets, toggles) {
         let statDict = STATS.reduce((a, x) => ({ ...a, [x]: 0.0 }), {});
         statDict['EXTRA_TEXT'] = []
 
@@ -270,7 +274,7 @@ export function Calculator() {
         }))
 
         // if we crit
-        if (crit) {
+        if (toggles['crit'][1]) {
             // calculate the 'total' values now
             statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC'])) / 100 + statDict['HP_BONUS']));
             statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) / 100 + statDict['ATK_BASE']));
@@ -659,14 +663,34 @@ export function Calculator() {
         return disp
     }
 
+    // function for displaying all the toggleable items
+    function Toggles() {
+        let list = []
+
+        Object.keys(toggles).map((toggleName) => {
+            let toggleArray = toggles[toggleName]
+            list.push(<ToggleButton type="checkbox" checked={toggleArray[1]} key={toggleName} onClick={
+                (event) => setToggles(toggles => ({ ...toggles, crit: [toggleArray[0], !toggleArray[1]] }))
+            }>{toggleArray[0]}</ToggleButton>)
+            return null
+        })
+        console.log(toggles)
+
+        return (
+            <Col sm={2}>
+                {list}
+            </Col>
+        )
+    }
+
     // Update sets and set bonuses from the artifacts
     useEffect(() => {
         setSets(calcSet(flower, feather, hourglass, goblet, hat))
     }, [flower, feather, hourglass, goblet, hat])
     // Update the stats from the artifacts
     useEffect(() => {
-        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets, crit));
-    }, [char, weap, flower, feather, hourglass, goblet, hat, sets, crit]);
+        setStats(calcStats(char, weap, flower, feather, hourglass, goblet, hat, sets, toggles));
+    }, [char, weap, flower, feather, hourglass, goblet, hat, sets, toggles]);
 
     // Updates on the Status of Genshin Calc
     function WIPAlert() {
@@ -942,9 +966,7 @@ export function Calculator() {
                     <br /><br />
                     <Row> {/**Skills and toggles */}
                         {/**Toggles */}
-                        <Col sm={2}>
-                            <ToggleButton type="checkbox" checked={crit} onClick={(e) => setCrit(e.currentTarget.checked)}> Add crit to calculations?</ToggleButton>
-                        </Col>
+                        <Toggles />
                         {/**LMB=default, E=skill, Q=burst */}
                         <Col>
                             {skillDefault(char, skillLevels, stats)}
