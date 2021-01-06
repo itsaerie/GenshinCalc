@@ -18,6 +18,7 @@ const STATS = [
     'CRYO_DAMAGE', 'CRYO_BONUS', 'CRYO_RESISTANCE',
     'GEO_DAMAGE', 'GEO_BONUS', 'GEO_RESISTANCE',
     'PHYSICAL_DAMAGE', 'PHYSICAL_BONUS', 'PHYSICAL_RESISTANCE',
+    'GLOBAL_BONUS', // modifier for global damage multipliers
     'EXTRA_TEXT'
 ]
 

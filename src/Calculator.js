@@ -24,6 +24,8 @@ function Round(val) {
 
 // Container for all of the different things in the calculator
 export function Calculator() {
+    const avgCrit = 'Avg Dmg'
+
     // basic char stuff
     const [char, setChar] = useState(
         {
@@ -147,7 +149,10 @@ export function Calculator() {
     // toggleables
     const [toggles, setToggles] = useState(
         {
-            'crit': [' Add crit to calculations?', false]
+            'Avg Dmg': {
+                'TOOLTIP': ' Add crit to calculations?',
+                'STATE': false
+            }
         }
     )
 
@@ -240,7 +245,7 @@ export function Calculator() {
             return null
         })
 
-        // iterate through sets
+        // add extra text bonuses that aren't in basic stats
         let allBonuses = []
         Object.keys(sets).map((setName) => {
             if (setName === '') {
@@ -256,6 +261,8 @@ export function Calculator() {
             }
             return null
         })
+        // TODO add char ascension/constellation bonuses
+        // TODO add weapon bonuses
         // add each bonus
         allBonuses.map(((bonuses) => {
             bonuses.map((bonus) => {
@@ -280,27 +287,25 @@ export function Calculator() {
         statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC'])) + statDict['HP_BONUS']));
         statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) + statDict['ATK_BONUS']));
         statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC'])) + statDict['DEF_BONUS']));
+        // and damages for elements
+        statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'] + statDict['GLOBAL_BONUS'])));
+        statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'] + statDict['GLOBAL_BONUS'])));
+        statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['DENDRO_BONUS'] + statDict['GLOBAL_BONUS'])));
+        statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ELECTRO_BONUS'] + statDict['GLOBAL_BONUS'])));
+        statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ANEMO_BONUS'] + statDict['GLOBAL_BONUS'])));
+        statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['CRYO_BONUS'] + statDict['GLOBAL_BONUS'])));
+        statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS'] + statDict['GLOBAL_BONUS'])));
+        statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS'] + statDict['GLOBAL_BONUS'])));
         // if we crit
-        if (toggles['crit'][1]) {
-            // and damages for elements
-            statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
-            statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
-            statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['DENDRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
-            statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ELECTRO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
-            statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ANEMO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
-            statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['CRYO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
-            statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
-            statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS'])) * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
-        } else {
-            // and damages for elements
-            statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'])));
-            statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'])));
-            statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['DENDRO_BONUS'])));
-            statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ELECTRO_BONUS'])));
-            statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ANEMO_BONUS'])));
-            statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['CRYO_BONUS'])));
-            statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS'])));
-            statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS'])));
+        if (toggles[avgCrit]['STATE']) {
+            statDict['PYRO_DAMAGE'] = Round(statDict['PYRO_DAMAGE'] * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['HYDRO_DAMAGE'] = Round(statDict['HYDRO_DAMAGE'] * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['DENDRO_DAMAGE'] = Round(statDict['DENDRO_DAMAGE'] * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['ELECTRO_DAMAGE'] = Round(statDict['ELECTRO_DAMAGE'] * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['ANEMO_DAMAGE'] = Round(statDict['ANEMO_DAMAGE'] * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['CRYO_DAMAGE'] = Round(statDict['CRYO_DAMAGE'] * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['GEO_DAMAGE'] = Round(statDict['GEO_DAMAGE'] * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
+            statDict['PHYSICAL_DAMAGE'] = Round(statDict['PHYSICAL_DAMAGE'] * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
         }
 
         return statDict;
@@ -667,14 +672,16 @@ export function Calculator() {
         let list = []
 
         Object.keys(toggles).map((toggleName) => {
-            let toggleArray = toggles[toggleName]
-            list.push(<ToggleButton type="checkbox" checked={toggleArray[1]} key={toggleName} onClick={
+            list.push(<ToggleButton type="checkbox" checked={toggles[toggleName]['STATE']} key={toggleName} onClick={
                 (event) => {
                     let newMap = {}
-                    newMap[toggleName] = [toggleArray[0], !toggleArray[1]]
+                    newMap[toggleName] = {
+                        'TOOLTIP': toggles[toggleName]['TOOLTIP'],
+                        'STATE': !toggles[toggleName]['STATE']
+                    }
                     setToggles(toggles => ({ ...toggles, ...newMap }))
                 }
-            }>{toggleArray[0]}</ToggleButton>)
+            }>{toggleName}</ToggleButton>)
             return null
         })
 
