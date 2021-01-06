@@ -1,0 +1,2 @@
+For json files which haven't been properly formatted or have a massive amount of inconsistencies.
+Honestly, it's probably easier to just redo these all rather than try to fix some half-assed work. Ok shade throwing is done.

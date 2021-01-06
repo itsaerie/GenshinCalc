@@ -314,66 +314,20 @@ export function Calculator() {
     // a function which returns skill with given stats
     function skillDefault(char, skillLevels, stats) {
         let list = []
-        switch (CHARINFO[char.name]["WEAPON_TYPE"]) {
-            case "BOW":
-                // add normal
-                list.push(
-                    <div id="default-normal">
-                        Normal Attack Damage
-                        <br />
-                        {CHARINFO[char.name]["Default"]["Normal"][skillLevels[0] - 1].map((val) => {
-                            return (
-                                <div>
-                                    {Round(val * stats.PHYSICAL_DAMAGE)}
-                                    <br />
-                                </div>
-                            )
-                        })}
-                    </div>
-                )
-                // add aimed shot
-                list.push(
-                    <div id="default-aimed">
-                        Aimed Shot Damage
-                        <br />
-                        {Round(CHARINFO[char.name]["Default"]["Aimed Shot"][skillLevels[0] - 1] * stats.PHYSICAL_DAMAGE)}
-                    </div>
-                )
-                // add fully charged aimed shot
-                list.push(
-                    <div id="default-full-aim">
-                        Fully-Charged Aimed Shot
-                        <br />
-                        {Round(CHARINFO[char.name]["Default"]["Fully-Charged Aimed Shot"][skillLevels[0] - 1] * stats.PHYSICAL_DAMAGE)}
-                    </div>
-                )
-                // add plunge dmg
-                list.push(
-                    <div id="default-plunge">
-                        Plunge DMG
-                        <br />
-                        {Round(CHARINFO[char.name]["Default"]["Plunge DMG"][skillLevels[0] - 1] * stats.PHYSICAL_DAMAGE)}
-                    </div>
-                )
-                // add low/high plunge dmg
-                list.push(
-                    <div id="default-range-plunge">
-                        Low/High Plunge DMG
-                        <br />
-                        {CHARINFO[char.name]["Default"]["Low/High Plunge DMG"][skillLevels[0] - 1].map((val) => {
-                            return (
-                                <div>
-                                    {Round(val * stats.PHYSICAL_DAMAGE)}
-                                    <br />
-                                </div>
-                            )
-                        })}
-                    </div>
-                )
-                break;
-            default:
-                console.log('unhandled weapon type')
-        }
+        let defaultStats = CHARINFO[char.name]["Skill"]
+        Object.keys(defaultStats).map((textName) => {
+            if (textName === "Name") {
+                return null
+            }
+            list.push(
+                <div id={textName}>
+                    {textName}
+                    <br />
+                    {Round(defaultStats[textName]['Multiplier'][skillLevels[1] - 1] * stats[defaultStats[textName]['Stat']])}
+                </div>
+            )
+            return null
+        })
         return (
             <Card> {/** Default */}
                 {CHARINFO[char.name]["Default"]["Name"]} Level
@@ -392,31 +346,22 @@ export function Calculator() {
     function skillSkill(char, skillLevels, stats) {
         let list = []
         let skillStats = CHARINFO[char.name]["Skill"]
-        switch (skillStats["Name"]) {
-            case "Explosive Puppet": // Amber's skill
-                // add hp
-                list.push(
-                    <div id="skill-hp">
-                        Puppet HP
-                        <br />
-                        {Round(skillStats["Inherited HP"][skillLevels[1] - 1] * stats.HP_TOTAL)}
-                    </div>
-                )
-                // add damage
-                list.push(
-                    <div id="skill-dmg">
-                        Explosion Damage
-                        <br />
-                        {Round(skillStats["Explosion DMG"][skillLevels[1] - 1] * stats.PYRO_DAMAGE)}
-                    </div>
-                )
-                break
-            default:
-                console.log('unhandled character skill')
-        }
+        Object.keys(skillStats).map((textName) => {
+            if (textName === "Name") {
+                return null
+            }
+            list.push(
+                <div id={textName}>
+                    {textName}
+                    <br />
+                    {Round(skillStats[textName]['Multiplier'][skillLevels[1] - 1] * stats[skillStats[textName]['Stat']])}
+                </div>
+            )
+            return null
+        })
         return (
             <Card> {/** Skill */}
-                {CHARINFO[char.name]["Skill"]["Name"]} level
+                {skillStats["Name"]} level
                 <Form.Control as="select" defaultValue={skillLevels[1]} onChange={(event) => {
                     setSkillLevels(skillLevels => ({ ...skillLevels, 1: event.target.value }));
 
@@ -432,28 +377,19 @@ export function Calculator() {
     function skillBurst(char, skillLevels, stats) {
         let list = []
         let burstStats = CHARINFO[char.name]["Burst"]
-        switch (burstStats["Name"]) {
-            case "Fiery Rain": // Amber's burst
-                // add damage per wave
-                list.push(
-                    <div id="burst-wave">
-                        Damage per Wave
-                        <br />
-                        {Round(burstStats["Fiery Rain DMG Per Wave"][skillLevels[2] - 1] * stats.PYRO_DAMAGE)}
-                    </div>
-                )
-                // add total damage
-                list.push(
-                    <div id="burst-wave">
-                        Total Damage
-                        <br />
-                        {Round(burstStats["Total Fiery Rain DMG"][skillLevels[2] - 1] * stats.PYRO_DAMAGE)}
-                    </div>
-                )
-                break
-            default:
-                console.log('unhandled character burst')
-        }
+        Object.keys(burstStats).map((textName) => {
+            if (textName === "Name") {
+                return null
+            }
+            list.push(
+                <div id={textName}>
+                    {textName}
+                    <br />
+                    {Round(burstStats[textName]['Multiplier'][skillLevels[1] - 1] * stats[burstStats[textName]['Stat']])}
+                </div>
+            )
+            return null
+        })
         return (
             <Card> {/** Burst */}
                 {CHARINFO[char.name]["Burst"]["Name"]} level
