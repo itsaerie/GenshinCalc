@@ -288,14 +288,14 @@ export function Calculator() {
         statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) + statDict['ATK_BONUS']));
         statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC'])) + statDict['DEF_BONUS']));
         // and damages for elements
-        statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS'] + statDict['GLOBAL_BONUS'])));
-        statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS'] + statDict['GLOBAL_BONUS'])));
-        statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['DENDRO_BONUS'] + statDict['GLOBAL_BONUS'])));
-        statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ELECTRO_BONUS'] + statDict['GLOBAL_BONUS'])));
-        statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ANEMO_BONUS'] + statDict['GLOBAL_BONUS'])));
-        statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['CRYO_BONUS'] + statDict['GLOBAL_BONUS'])));
-        statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS'] + statDict['GLOBAL_BONUS'])));
-        statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS'] + statDict['GLOBAL_BONUS'])));
+        statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
+        statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
+        statDict['DENDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['DENDRO_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
+        statDict['ELECTRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ELECTRO_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
+        statDict['ANEMO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['ANEMO_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
+        statDict['CRYO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['CRYO_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
+        statDict['GEO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['GEO_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
+        statDict['PHYSICAL_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PHYSICAL_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
         // if we crit
         if (toggles[avgCrit]['STATE']) {
             statDict['PYRO_DAMAGE'] = Round(statDict['PYRO_DAMAGE'] * (1 + (statDict['CRIT_RATE'] * statDict['CRIT_DAMAGE'] * .01 * .01)));
@@ -314,16 +314,14 @@ export function Calculator() {
     // a function which returns skill with given stats
     function skillDefault(char, skillLevels, stats) {
         let list = []
-        let defaultStats = CHARINFO[char.name]["Skill"]
+        let defaultStats = CHARINFO[char.name]["Default"]
         Object.keys(defaultStats).map((textName) => {
             if (textName === "Name") {
                 return null
             }
             list.push(
                 <div id={textName}>
-                    {textName}
-                    <br />
-                    {Round(defaultStats[textName]['Multiplier'][skillLevels[1] - 1] * stats[defaultStats[textName]['Stat']])}
+                    {textName}: {Round(defaultStats[textName]['Multiplier'][skillLevels[0] - 1] * stats[defaultStats[textName]['Stat']])}
                 </div>
             )
             return null
@@ -352,9 +350,7 @@ export function Calculator() {
             }
             list.push(
                 <div id={textName}>
-                    {textName}
-                    <br />
-                    {Round(skillStats[textName]['Multiplier'][skillLevels[1] - 1] * stats[skillStats[textName]['Stat']])}
+                    {textName}: {Round(skillStats[textName]['Multiplier'][skillLevels[1] - 1] * stats[skillStats[textName]['Stat']])}
                 </div>
             )
             return null
@@ -383,9 +379,7 @@ export function Calculator() {
             }
             list.push(
                 <div id={textName}>
-                    {textName}
-                    <br />
-                    {Round(burstStats[textName]['Multiplier'][skillLevels[1] - 1] * stats[burstStats[textName]['Stat']])}
+                    {textName}: {Round(burstStats[textName]['Multiplier'][skillLevels[2] - 1] * stats[burstStats[textName]['Stat']])}
                 </div>
             )
             return null

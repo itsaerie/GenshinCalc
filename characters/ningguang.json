@@ -351,7 +351,7 @@
 		"Name": "Sparkling Scatter",
 		"Normal": {
 			"Stat": "GEO_DAMAGE",
-			"Modifier": [
+			"Multiplier": [
 				0.280,
 				0.301,
 				0.322,
@@ -371,7 +371,7 @@
 		},
 		"Charged Attack DMG": {
 			"Stat": "GEO_DAMAGE",
-			"Modifier": [
+			"Multiplier": [
 				1.74,
 				1.87,
 				2.00,
@@ -391,7 +391,7 @@
 		},
 		"DMG per Star Jade": {
 			"Stat": "GEO_DAMAGE",
-			"Modifier": [
+			"Multiplier": [
 				0.496,
 				0.533,
 				0.570,
@@ -411,7 +411,7 @@
 		},
 		"Plunge DMG": {
 			"Stat": "GEO_DAMAGE",
-			"Modifier": [
+			"Multiplier": [
 				0.568,
 				0.615,
 				0.661,
@@ -431,7 +431,7 @@
 		},
 		"Low Plunge DMG": {
 			"Stat": "GEO_DAMAGE",
-			"Modifier": [
+			"Multiplier": [
 				1.14,
 				1.23,
 				1.32,
@@ -451,7 +451,7 @@
 		},
 		"High Plunge DMG": {
 			"Stat": "GEO_DAMAGE",
-			"Modifier": [
+			"Multiplier": [
 				1.42,
 				1.53,
 				1.65,
@@ -474,7 +474,7 @@
 		"Name": "Jade Screen",
 		"Inherited HP": {
 			"Stat": "HP_TOTAL",
-			"Modifier": [
+			"Multiplier": [
 				0.501,
 				0.531,
 				0.561,
@@ -494,7 +494,7 @@
 		},
 		"Skill DMG": {
 			"Stat": "GEO_DAMAGE",
-			"Modifier": [
+			"Multiplier": [
 				2.30,
 				2.48,
 				2.65,
@@ -517,7 +517,7 @@
 		"Name": "Starshatter",
 		"DMG per Gem": {
 			"Stat": "GEO_DAMAGE",
-			"Modifier": [
+			"Multiplier": [
 				0.87,
 				0.935,
 				1.00,
@@ -539,7 +539,7 @@
 	"Talent": {
 		"Ascension 4": {
 			"GEO_DMG": 0.12,
-			"Modifier": "True"
+			"Multiplier": "True"
 		}
 	}
 }

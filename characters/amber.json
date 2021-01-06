@@ -351,7 +351,7 @@
     "Name": "Sharpshooter",
     "1-Hit DMG": {
       "Stat": "PHYSICAL_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         0.361,
         0.391,
         0.420,
@@ -371,7 +371,7 @@
     },
     "2-Hit DMG": {
       "Stat": "PHYSICAL_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         0.361,
         0.391,
         0.420,
@@ -391,7 +391,7 @@
     },
     "3-Hit DMG": {
       "Stat": "PHYSICAL_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         0.464,
         0.502,
         0.540,
@@ -411,7 +411,7 @@
     },
     "4-Hit DMG": {
       "Stat": "PHYSICAL_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         0.473,
         0.512,
         0.550,
@@ -431,7 +431,7 @@
     },
     "5-Hit DMG": {
       "Stat": "PHYSICAL_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         0.593,
         0.642,
         0.690,
@@ -451,7 +451,7 @@
     },
     "Aimed Shot": {
       "Stat": "PHYSICAL_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         0.439,
         0.474,
         0.510,
@@ -471,7 +471,7 @@
     },
     "Fully-Charged Aimed Shot": {
       "Stat": "PYRO_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         1.24,
         1.33,
         1.43,
@@ -491,7 +491,7 @@
     },
     "Plunge DMG": {
       "Stat": "PHYSICAL_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         0.568,
         0.615,
         0.661,
@@ -511,7 +511,7 @@
     },
     "Low Plunge DMG": {
       "Stat": "PHYSICAL_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         1.14,
         1.23,
         1.32,
@@ -525,12 +525,13 @@
         2.40,
         2.56,
         2.72,
-        2.88
+        2.88,
+        3.04
       ]
     },
     "High Plunge DMG": {
       "Stat": "PHYSICAL_DAMAGE",
-      "Modifier": [
+      "Multiplier": [
         1.42,
         1.53,
         1.65,
@@ -643,7 +644,7 @@
     },
     "Ascension 4": {
       "ATK_PERC": 0.15,
-      "Modifier": "True"
+      "Multiplier": "True"
     }
   },
   "Constellation": {
@@ -658,7 +659,7 @@
     },
     "6": {
       "ATK_PERC": 0.15,
-      "Modifier": "True"
+      "Multiplier": "True"
     }
   }
 }
