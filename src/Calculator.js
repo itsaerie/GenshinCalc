@@ -645,11 +645,15 @@ export function Calculator() {
                 <Alert variant="primary" onClose={() => setShow(false)} dismissible>
                     <Alert.Heading>Genshin Calculator</Alert.Heading>
                     <p>
-                        This tool is still under construction, please ignore the clutter. If you'd like to contribute, DM me on Discord: aerie#0017 LF: JSX and JSON writers
+                        This tool is still under construction, please ignore the clutter. Questions? Comments? Concerns? Missing your husbando/waifu?
+                        <a href="https://discord.com/invite/NRyzpBN"> Join Discord and complain.</a>
+                    </p>
+                    <p>
+                        I also have a <a href="https://ko-fi.com/itsaerie">ko-fi</a> because I don't have Keqing
                     </p>
                     <hr />
                     <p>
-                        TODO: Set bonuses (artifacts), then Ascension and Constellation Bonuses, then Special Weapon Text
+                        TODO (there's no order): Weapon Data, Character Data, Set Bonuses, Char Ascension + Constellations, Weapon Bonuses, Dark Mode
                     </p>
                 </Alert>
             );
