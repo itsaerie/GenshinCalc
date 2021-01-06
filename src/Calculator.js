@@ -283,10 +283,15 @@ export function Calculator() {
             return null
         }))
 
+        // base crit multiplier is 1.5
+        statDict['CRIT_DAMAGE'] += 50
+        // base energy recharge is 100%
+        statDict['ENERGY_RECHARGE'] += 100
+
         // calculate the 'total' values now
-        statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC'])) + statDict['HP_BONUS']));
-        statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC'])) + statDict['ATK_BONUS']));
-        statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC'])) + statDict['DEF_BONUS']));
+        statDict['HP_TOTAL'] = Round(((statDict['HP_BASE'] * (1 + statDict['HP_PERC']/100)) + statDict['HP_BONUS']));
+        statDict['ATK_TOTAL'] = Round(((statDict['ATK_BASE'] * (1 + statDict['ATK_PERC']/100)) + statDict['ATK_BONUS']));
+        statDict['DEF_TOTAL'] = Round(((statDict['DEF_BASE'] * (1 + statDict['DEF_PERC']/100)) + statDict['DEF_BONUS']));
         // and damages for elements
         statDict['PYRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['PYRO_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
         statDict['HYDRO_DAMAGE'] = Round((statDict['ATK_TOTAL'] * (1 + statDict['HYDRO_BONUS']/100 + statDict['GLOBAL_BONUS']/100)));
